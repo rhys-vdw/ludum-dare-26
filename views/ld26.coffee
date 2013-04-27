@@ -35,30 +35,19 @@ createGround = (heights, stepWidth) ->
     createSegment xa, ya, xb, yb
 
 
-
-
 Game.state = ->
   setup: ->
     gravity = new b2Vec2 0, 10
     Game.world = new b2World gravity, true
 
-    SCALE = 30
+    SCALE = 20
 
     fixDef = new b2FixtureDef
     fixDef.density = 1.0
     fixDef.friction = 0.5
     fixDef.restitution = 0.2
 
-    # create ground
-    bodyDef = new b2BodyDef
-    bodyDef.type = b2Body.b2_staticBody
-    bodyDef.position.x = canvas.width / 2 / SCALE
-    bodyDef.position.y = canvas.height / SCALE
-
-    fixDef.shape = new b2PolygonShape
-    fixDef.shape.SetAsBox( 600 / SCALE / 2, 10 / SCALE / 2)
-    Game.world.CreateBody(bodyDef).CreateFixture(fixDef)
-
+    # Create Terrain
     terrain = new Game.Terrain(80)
     terrain.generateUsingMidPoint(1, 1)
     createGround terrain.points, 1
