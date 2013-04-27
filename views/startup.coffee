@@ -14,6 +14,10 @@ window.b2MassData = Box2D.Collision.Shapes.b2MassData
 window.b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
 window.b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
 window.b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+window.b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint
+window.b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef
+window.b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint
+window.b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
 
 # http:#paulirish.com/2011/requestanimationframe-for-smart-animating/
 window.requestAnimFrame =
