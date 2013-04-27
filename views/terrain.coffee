@@ -2,7 +2,24 @@ FROMTOP = 14
 class Game.Terrain
   constructor: (segmentCount) ->
     @points = [FROMTOP]
+    @segments = []
+    @stepWidth = 5
+
     @extendBy(segmentCount)
+
+  draw: ->
+    ctx = jaws.context
+    ctx.scale(Game.SCALE, Game.SCALE)
+    ctx.fillStyle = "black"
+    ctx.beginPath()
+    ctx.moveTo 0, @points[0]
+    for point, i in @points
+      ctx.lineTo(i*@stepWidth, point)
+    ctx.lineTo(@points.length, 50)
+    ctx.lineTo(0, 50)
+    ctx.fill()
+    ctx.scale(1/30, 1/30)
+    console.log 'drawn'
 
   generateUsingMidPoint: (maxElevation, sharpness) ->
     @midPoint(0, @segmentCount()-1, maxElevation, sharpness)
@@ -19,7 +36,7 @@ class Game.Terrain
     segmentCount = @segmentCount()
     @points[segmentCount..segmentCount+extendByCount] = (FROMTOP for num in [1..extendByCount])
     @midPoint(segmentCount-1, @segmentCount()-1, 5, 0.9)
-    @createGround @points[segmentCount-1..@segmentCount-1], 5, segmentCount-1
+    @createGround @points[segmentCount-1..@segmentCount-1], @stepWidth, segmentCount-1
     #TODO: trash old points
     console.log "Array is #{@segmentCount()} long"
 
@@ -29,7 +46,7 @@ class Game.Terrain
       ya = heights[i - 1]
       xb = stepWidth * (i + startFrom)
       yb = heights[i]
-      @createSegment xa, ya, xb, yb
+      @segments.push @createSegment xa, ya, xb, yb
     @x = xb
 
   createSegment: (xa, ya, xb, yb) ->
@@ -55,7 +72,10 @@ class Game.Terrain
     groundFixtureDef.restitution = 0.2
     groundFixtureDef.shape = new b2PolygonShape
     groundFixtureDef.shape.SetAsOrientedBox length / 2, groundThickness, new b2Vec2(0, 0), rotation
-    Game.world.CreateBody(bodyDef).CreateFixture(groundFixtureDef)
+    body = Game.world.CreateBody(bodyDef)
+    body.CreateFixture(groundFixtureDef)
+    body
 
   segmentCount: -> @points.length
+
 

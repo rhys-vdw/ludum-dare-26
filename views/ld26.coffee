@@ -30,7 +30,7 @@ Game.state = ->
     # Create Terrain
     @terrain = new Game.Terrain(50)
 
-    Game.tank = new Game.Tank 120, 10
+    Game.tank = new Game.Tank 10, 10
 
     #setup debug draw
     debugDraw = new b2DebugDraw()
@@ -56,8 +56,9 @@ Game.state = ->
 
   draw: ->
     jaws.clear()
-    @viewport.apply ->
+    @viewport.apply =>
       Game.world.DrawDebugData()
       Game.tank.draw()
+      @terrain.draw()
 
 
