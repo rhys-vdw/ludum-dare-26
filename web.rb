@@ -1,5 +1,7 @@
 require 'sinatra'
 
+set :haml, :format => :html5
+
 get '/' do
-  "LD 26"
+	haml :index
 end
