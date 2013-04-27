@@ -1,8 +1,8 @@
 class Game.Tank
-  width = 1
+  width = 5
   height = 0.2
   clearance = -0.2
-  wheelCount = 2
+  wheelCount = 5
   wheelRadius = 0.4
 
   createTank: (x, y) ->
@@ -35,7 +35,7 @@ class Game.Tank
       bodyDef.mass = 10
       fixtureDef.shape = new b2CircleShape wheelRadius
       fixtureDef.restitution = 0
-      fixtureDef.friction = Infinity
+      fixtureDef.friction = 100
 
       wheel = Game.world.CreateBody bodyDef
       wheel.CreateFixture fixtureDef
@@ -44,7 +44,7 @@ class Game.Tank
       motorDef.Initialize @body, wheel, wheelPos
       motorDef.enableMotor = true
       motorDef.motorSpeed = 10
-      motorDef.maxMotorTorque = Infinity
+      motorDef.maxMotorTorque = 100
 
       motor = Game.world.CreateJoint motorDef
 
@@ -59,9 +59,21 @@ class Game.Tank
     @x = x*Game.SCALE
     @y = y*Game.SCALE
     @createTank(x, y)
-    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: 0, scale: 1, anchor: "center"}
+    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -30, scale: 2.5, anchor: "center"}
+    @wheelSprites = []
+    for wheel in @wheels
+      pos = wheel.GetPosition()
+      wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
 
   draw: ->
+    for wheel in @wheels
+      pos = wheel.GetPosition()
+      jaws.context.save()
+      jaws.context.translate pos.x * Game.SCALE, pos.y * Game.SCALE 
+      jaws.context.rotate wheel.GetAngle();
+      wheel.sprite.draw()
+      jaws.context.restore()
+
     jaws.context.save()
     jaws.context.translate @x, @y
     jaws.context.rotate @body.GetAngle()

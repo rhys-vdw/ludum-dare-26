@@ -1,4 +1,5 @@
-jaws.assets.add 'sprites/tank.png'
+jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png']
+
 TERRAIN_PREDRAW_THRESH = 500
 Game.SCALE = 20
 
@@ -19,7 +20,7 @@ Game.state = ->
     # Create Terrain
     @terrain = new Game.Terrain(50)
 
-    Game.tank = new Game.Tank 1, 4
+    Game.tank = new Game.Tank 10, 12
 
     #setup debug draw
     debugDraw = new b2DebugDraw()
