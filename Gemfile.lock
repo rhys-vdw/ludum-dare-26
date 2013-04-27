@@ -9,6 +9,8 @@ GEM
     daemons (1.1.9)
     eventmachine (0.12.10)
     fssm (0.2.10)
+    haml (4.0.0)
+      tilt
     rack (1.4.1)
     sass (3.2.8)
     sinatra (1.1.0)
@@ -25,6 +27,7 @@ PLATFORMS
 
 DEPENDENCIES
   compass
+  haml
   sass
   sinatra (= 1.1.0)
   thin
