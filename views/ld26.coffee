@@ -12,7 +12,7 @@ $ ->
 class Game.Camera
   constructor: ->
     # Setup viewport
-    @viewport = new jaws.Viewport({max_x: Infinity, max_y: 480})
+    @viewport = new jaws.Viewport({max_x: Infinity, max_y: Infinity})
     @x = 100
     @y = 100
     @parallax = new jaws.Parallax({repeat_x: true})
@@ -38,7 +38,7 @@ Game.state = ->
     Game.world = new b2World gravity, true
 
     # Create Terrain
-    @terrain = new Game.Terrain(50)
+    @terrain = new Game.Terrain()
 
     Game.tank = new Game.Tank 10, 10
 
@@ -59,7 +59,7 @@ Game.state = ->
     Game.tank.update()
     @camera.update()
     if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
-      @terrain.extendBy(50)
+      @terrain.extend()
 
   draw: ->
     jaws.clear()

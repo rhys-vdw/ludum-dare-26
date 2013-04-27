@@ -1,11 +1,12 @@
-FROMTOP = 14
+FROMTOP = 40
 class Game.Terrain
-  constructor: (segmentCount) ->
+  constructor: ->
     @points = [FROMTOP]
     @segments = []
-    @stepWidth = 5
-
-    @extendBy(segmentCount)
+    @stepWidth = 3
+    @segmentGroupLength = 80
+    @displacement = 30
+    @extend()
 
   draw: ->
     ctx = jaws.context
@@ -19,10 +20,6 @@ class Game.Terrain
     ctx.lineTo(0, 50)
     ctx.fill()
     ctx.scale(1/Game.SCALE, 1/Game.SCALE)
-    console.log 'drawn'
-
-  generateUsingMidPoint: (maxElevation, sharpness) ->
-    @midPoint(0, @segmentCount()-1, maxElevation, sharpness)
 
   midPoint: (start, end, maxElevation, sharpness) ->
     middle = Math.round((start + end) * 0.5)
@@ -32,10 +29,10 @@ class Game.Terrain
     @midPoint(start, middle, maxElevation*sharpness, sharpness)
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
 
-  extendBy: (extendByCount) ->
+  extend: ->
     segmentCount = @segmentCount()
-    @points[segmentCount..segmentCount+extendByCount] = (FROMTOP for num in [1..extendByCount])
-    @midPoint(segmentCount-1, @segmentCount()-1, 5, 0.9)
+    @points[segmentCount..segmentCount+@segmentGroupLength] = (FROMTOP for num in [1..@segmentGroupLength])
+    @midPoint(segmentCount-1, @segmentCount()-1, @displacement, 0.50)
     @createGround @points[segmentCount-1..@segmentCount-1], @stepWidth, segmentCount-1
     #TODO: trash old points
     console.log "Array is #{@segmentCount()} long"
