@@ -1,33 +1,27 @@
-
 class Terrain
   constructor: (segmentCount) ->
     @segmentCount = segmentCount
-    @points = []
     @points = (8 for num in [1..segmentCount])
-    @
 
   generateUsingMidPoint: (maxElevation, sharpness) ->
-    @midPoint(0, @segmentCount, maxElevation, sharpness)
-    @
+    @midPoint(0, @segmentCount-1, maxElevation, sharpness)
 
   midPoint: (start, end, maxElevation, sharpness) ->
     middle = Math.round((start + end) * 0.5)
     return if ((end-start<=1) || middle==start || middle==end)
-    newAltitude = 0.5 * (@points[end-1] + @points[start]) + maxElevation*(1 - 2*Math.random())
+    newAltitude = 0.5 * (@points[end] + @points[start]) + maxElevation*(1 - 2*Math.random())
     @points[middle] = newAltitude
     @midPoint(start, middle, maxElevation*sharpness, sharpness)
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
-    @
+
+  extend: (extendbycount) ->
+    console.log 'do it'
 
 terrain = new Terrain(80)
 terrain.generateUsingMidPoint(1, 1)
 
 
-
-
-
 $ ->
-
   canvas = $('#game')[0]
   ctx = canvas.getContext('2d')
 
@@ -43,7 +37,7 @@ $ ->
     xDelta = xb - xa
     yDelta = yb - ya
 
-    console.log xa + xDelta / 2, ya + yDelta / 2 
+    #console.log xa + xDelta / 2, ya + yDelta / 2
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_staticBody
     bodyDef.position.x = xa + xDelta / 2
