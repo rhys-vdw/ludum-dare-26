@@ -32,6 +32,7 @@ $ ->
 
   RAD_TO_DEG = 180 / Math.PI
 
+  tank = null
   world = null
   createSegment = (xa, ya, xb, yb) ->
     xDelta = xb - xa
@@ -62,7 +63,7 @@ $ ->
   init = ->
      gravity = new b2Vec2 0, 10
      sleep = true
-     world = new b2World gravity, sleep
+     Game.world = world = new b2World gravity, sleep
      
      SCALE = 30
    
@@ -82,6 +83,7 @@ $ ->
      world.CreateBody(bodyDef).CreateFixture(fixDef)
    
      createGround terrain.points, 1
+     tank = new Game.Tank 1, 4
 
      # create some objects
      ###
@@ -111,7 +113,10 @@ $ ->
      world.DrawDebugData()
      world.ClearForces()
    
+     tank.update()
      requestAnimFrame(update)
 
   init()
   requestAnimFrame(update)
+
+  jaws.start { draw: -> }

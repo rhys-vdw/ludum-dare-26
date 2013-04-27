@@ -15,6 +15,10 @@ get '/ld26.js' do
 	coffee :ld26
 end
 
+get '/tank.js' do
+  coffee :tank
+end
+
 get '/startup.js' do
 	coffee :startup
 end
