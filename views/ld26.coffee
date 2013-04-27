@@ -15,14 +15,18 @@ class Game.Camera
     @viewport = new jaws.Viewport({max_x: Infinity, max_y: 480})
     @x = 100
     @y = 100
+    @parallax = new jaws.Parallax({repeat_x: true})
+    @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
 
   update: ->
     # Move around the tank for now.
     @x = Game.tank.x + 500
     @y = Game.tank.y
+    @parallax.camera_x = @viewport.x
     @viewport.centerAround this
 
   apply: (func) =>
+    @parallax.draw()
     @viewport.apply func
 
 Game.deltaTime = ->
