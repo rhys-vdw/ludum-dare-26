@@ -11,6 +11,8 @@ $ ->
 
 class Game.Camera
   constructor: ->
+    # Setup viewport
+    @viewport = new jaws.Viewport({max_x: Infinity, max_y: 480})
     @x = 100
     @y = 100
 
@@ -18,6 +20,10 @@ class Game.Camera
     # Move around the tank for now.
     @x = Game.tank.x + 500
     @y = Game.tank.y
+    @viewport.centerAround this
+
+  apply: (func) =>
+    @viewport.apply func
 
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
@@ -40,24 +46,21 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
-    Game.camera = new Game.Camera
 
-    # Setup viewport
-    @viewport = new jaws.Viewport({max_x: Infinity, max_y: 480})
+    @camera = new Game.Camera
 
   update: ->
     Game.world.Step Game.deltaTime()*0.5, 10, 10
     Game.world.ClearForces()
     Game.tank.update()
-    Game.camera.update()
-    @viewport.centerAround Game.camera
-    if @viewport.x+@viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
+    @camera.update()
+    if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
       @terrain.extendBy(50)
 
   draw: ->
     jaws.clear()
-    @viewport.apply =>
-      Game.world.DrawDebugData()
+    @camera.apply =>
+      #Game.world.DrawDebugData()
       Game.tank.draw()
       @terrain.draw()
 
