@@ -4,7 +4,7 @@ class Terrain
   constructor: (segmentCount) ->
     @segmentCount = segmentCount
     @points = []
-    @points = (0 for num in [1..segmentCount])
+    @points = (8 for num in [1..segmentCount])
     @
 
   generateUsingMidPoint: (maxElevation, sharpness) ->
@@ -20,9 +20,9 @@ class Terrain
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
     @
 
-terrain = new Terrain(40)
-terrain.generateUsingMidPoint(2, 1)
-console.dir terrain.points
+terrain = new Terrain(80)
+terrain.generateUsingMidPoint(1, 1)
+
 
 b2Vec2 = Box2D.Common.Math.b2Vec2
 b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -106,7 +106,7 @@ $ ->
      fixDef.shape.SetAsBox( 600 / SCALE / 2, 10 / SCALE / 2)
      world.CreateBody(bodyDef).CreateFixture(fixDef)
    
-     createGround [5, 3, 5, 2, 5], 2
+     createGround terrain.points, 1
 
      # create some objects
      ###
