@@ -1,3 +1,4 @@
+window.Game = {}
 # Box2D aliases
 window.b2Vec2 = Box2D.Common.Math.b2Vec2
 window.b2BodyDef = Box2D.Dynamics.b2BodyDef
