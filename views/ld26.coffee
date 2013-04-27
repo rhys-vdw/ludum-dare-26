@@ -1,7 +1,7 @@
 $ ->
   window.canvas = $('#game')[0]
   window.ctx = canvas.getContext('2d')
-  jaws.start Game.state, fps: 30
+  jaws.start Game.state, fps: 60
 
 
 createSegment = (xa, ya, xb, yb) ->
