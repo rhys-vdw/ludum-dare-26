@@ -3,6 +3,7 @@ class Game.Tank
   height = 0.5
 
   constructor: (x, y) ->
+    @drivingForce = 1000
 
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
@@ -11,7 +12,7 @@ class Game.Tank
 
     fixtureDef = new b2FixtureDef
     fixtureDef.density = 1.0
-    fixtureDef.friction = 0.0
+    fixtureDef.friction = 0.4
     fixtureDef.restitution = 0.5
     fixtureDef.shape = new b2PolygonShape
     fixtureDef.shape.SetAsBox width, height
@@ -24,8 +25,8 @@ class Game.Tank
     #Game.context.drawImage @body.position.x, @body.position.y
 
   update: ->
-    if jaws.pressed 'right'
-      @body.ApplyForce new b2Vec2( 100, 0 ), @body.GetPosition()
+    #if jaws.pressed 'right'
+    @body.ApplyForce new b2Vec2( @drivingForce * Game.deltaTime(), 0 ), @body.GetPosition()
 
 
 

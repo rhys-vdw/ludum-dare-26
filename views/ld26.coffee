@@ -37,6 +37,9 @@ createGround = (heights, stepWidth) ->
 
 
 
+Game.deltaTime = ->
+  jaws.game_loop.tick_duration / 1000
+
 Game.state = ->
   setup: ->
     gravity = new b2Vec2 0, 10
@@ -74,7 +77,7 @@ Game.state = ->
     Game.world.SetDebugDraw debugDraw
 
   update: ->
-    Game.world.Step jaws.game_loop.tick_duration/1000, 10, 10
+    Game.world.Step Game.deltaTime(), 10, 10
     Game.world.DrawDebugData()
     Game.world.ClearForces()
     Game.tank.update()
