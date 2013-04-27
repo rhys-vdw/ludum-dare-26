@@ -1,10 +1,11 @@
+FROMTOP = 14
 class Game.Terrain
   constructor: (segmentCount) ->
-    @segmentCount = segmentCount
-    @points = (8 for num in [1..segmentCount])
+    @points = [FROMTOP]
+    @extendBy(segmentCount)
 
   generateUsingMidPoint: (maxElevation, sharpness) ->
-    @midPoint(0, @segmentCount-1, maxElevation, sharpness)
+    @midPoint(0, @segmentCount()-1, maxElevation, sharpness)
 
   midPoint: (start, end, maxElevation, sharpness) ->
     middle = Math.round((start + end) * 0.5)
@@ -14,8 +15,43 @@ class Game.Terrain
     @midPoint(start, middle, maxElevation*sharpness, sharpness)
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
 
-  extend: (extendByCount) ->
-    segmentCount = @segmentCount
-    @segmentCount += extendByCount
+  extendBy: (extendByCount) ->
+    segmentCount = @segmentCount()
     # FIXME: hardcoded maxElevation and sharpness
-    @midPoint(segmentCount-1, @segmentCount-1, 1, 1)
+    #
+    @points[segmentCount..segmentCount+extendByCount] = (FROMTOP for num in [1..extendByCount])
+    @midPoint(segmentCount-1, @segmentCount()-1, 5, 0.4)
+    @createGround @points[segmentCount-1..@segmentCount-1], 1, segmentCount-1
+    console.log "Array is #{@segmentCount()} long"
+
+  createGround: (heights, stepWidth, startFrom) ->
+    for i in [1...heights.length]
+      xa = stepWidth * (i - 1 + startFrom)
+      ya = heights[i - 1]
+      xb = stepWidth * (i + startFrom)
+      yb = heights[i]
+      @createSegment xa, ya, xb, yb
+    @x = xb
+
+  createSegment: (xa, ya, xb, yb) ->
+    xDelta = xb - xa
+    yDelta = yb - ya
+
+    bodyDef = new b2BodyDef
+    bodyDef.type = b2Body.b2_staticBody
+    bodyDef.position.x = xa + xDelta / 2
+    bodyDef.position.y = ya + yDelta / 2
+
+    length = Math.sqrt xDelta * xDelta + yDelta * yDelta
+    rotation = Math.atan yDelta / xDelta
+    
+    groundFixtureDef = new b2FixtureDef
+    groundFixtureDef.density = 1.0
+    groundFixtureDef.friction = 0.2
+    groundFixtureDef.restitution = 0.2
+    groundFixtureDef.shape = new b2PolygonShape
+    groundFixtureDef.shape.SetAsOrientedBox length / 2, 0.15, new b2Vec2(0, 0), rotation
+    Game.world.CreateBody(bodyDef).CreateFixture(groundFixtureDef)
+
+  segmentCount: -> @points.length
+
