@@ -2,8 +2,6 @@ jaws.assets.add 'sprites/tank.png'
 Game.SCALE = 20
 
 $ ->
-  window.canvas = $('#game')[0]
-  window.ctx = canvas.getContext('2d')
   jaws.start Game.state, fps: 60
 
 
@@ -21,7 +19,7 @@ createSegment = (xa, ya, xb, yb) ->
   
   groundFixtureDef = new b2FixtureDef
   groundFixtureDef.density = 1.0
-  groundFixtureDef.friction = 0.5
+  groundFixtureDef.friction = 0.2
   groundFixtureDef.restitution = 0.2
 
   groundFixtureDef.shape = new b2PolygonShape
@@ -47,31 +45,31 @@ Game.state = ->
     Game.world = new b2World gravity, true
 
     # Create Terrain
-    terrain = new Game.Terrain(180)
+    terrain = new Game.Terrain(1000)
     terrain.generateUsingMidPoint(1, 1)
     createGround terrain.points, 1
     Game.tank = new Game.Tank 1, 4
 
     #setup debug draw
     debugDraw = new b2DebugDraw()
-    debugDraw.SetSprite ctx
+    debugDraw.SetSprite jaws.context
     debugDraw.SetDrawScale Game.SCALE
     debugDraw.SetFillAlpha 0.3
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
-
     Game.world.SetDebugDraw debugDraw
 
     # Setup viewport
-    @viewport = new jaws.Viewport({max_x: 2000, max_y: 480})
+    @viewport = new jaws.Viewport({max_x: 12000, max_y: 480})
 
   update: ->
     Game.world.Step Game.deltaTime(), 10, 10
-    Game.world.DrawDebugData()
     Game.world.ClearForces()
     Game.tank.update()
     @viewport.centerAround Game.tank
 
   draw: ->
-    @viewport.apply =>
+    jaws.clear()
+    @viewport.apply ->
+      Game.world.DrawDebugData()
       Game.tank.draw()

@@ -3,7 +3,7 @@ class Game.Tank
   height = 0.5
 
   constructor: (x, y) ->
-    @drivingForce = 1000
+    @drivingForce = 1400
     @x = x*Game.SCALE
     @y = y*Game.SCALE
 
