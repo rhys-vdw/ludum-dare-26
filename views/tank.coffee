@@ -43,7 +43,7 @@ class Game.Tank
       motorDef = new b2RevoluteJointDef
       motorDef.Initialize @body, wheel, wheelPos
       motorDef.enableMotor = true
-      motorDef.motorSpeed = 10
+      motorDef.motorSpeed = 20
       motorDef.maxMotorTorque = Infinity
 
       motor = Game.world.CreateJoint motorDef
@@ -55,7 +55,6 @@ class Game.Tank
 
 
   constructor: (x, y) ->
-    @drivingForce = 1000
     @x = x*Game.SCALE
     @y = y*Game.SCALE
     @createTank(x, y)

@@ -8,6 +8,16 @@ $ ->
   jaws.start Game.state, fps: 60
 
 
+class Game.Camera
+  constructor: ->
+    @x = 100
+    @y = 100
+
+  update: ->
+    # Move around the tank for now.
+    @x = Game.tank.x + 500
+    @y = Game.tank.y
+
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
 
@@ -19,7 +29,7 @@ Game.state = ->
     # Create Terrain
     @terrain = new Game.Terrain(50)
 
-    Game.tank = new Game.Tank 1, 4
+    Game.tank = new Game.Tank 120, 10
 
     #setup debug draw
     debugDraw = new b2DebugDraw()
@@ -29,6 +39,7 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
+    Game.camera = new Game.Camera
 
     # Setup viewport
     @viewport = new jaws.Viewport({max_x: Infinity, max_y: 480})
@@ -37,7 +48,8 @@ Game.state = ->
     Game.world.Step Game.deltaTime()*0.5, 10, 10
     Game.world.ClearForces()
     Game.tank.update()
-    @viewport.centerAround Game.tank
+    Game.camera.update()
+    @viewport.centerAround Game.camera
     if @viewport.x+@viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
       @terrain.extendBy(50)
 
@@ -46,3 +58,5 @@ Game.state = ->
     @viewport.apply ->
       Game.world.DrawDebugData()
       Game.tank.draw()
+
+
