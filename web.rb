@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'haml'
-require 'compass'
 require 'sass'
 
 get '/stylesheets/style.css' do
