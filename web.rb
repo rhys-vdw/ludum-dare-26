@@ -1,6 +1,12 @@
 require 'sinatra'
+require 'haml'
+require 'compass'
+require 'sass'
 
-set :haml, :format => :html5
+get '/stylesheets/style.css' do
+  sass :style
+end
+
 
 get '/' do
 	haml :index
