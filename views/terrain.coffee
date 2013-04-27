@@ -14,6 +14,8 @@ class Game.Terrain
     @midPoint(start, middle, maxElevation*sharpness, sharpness)
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
 
-  extend: (extendbycount) ->
-    console.log 'do it'
-
+  extend: (extendByCount) ->
+    segmentCount = @segmentCount
+    @segmentCount += extendByCount
+    # FIXME: hardcoded maxElevation and sharpness
+    @midPoint(segmentCount-1, @segmentCount-1, 1, 1)
