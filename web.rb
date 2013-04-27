@@ -14,3 +14,7 @@ end
 get '/ld26.js' do
 	coffee :ld26
 end
+
+get '/startup.js' do
+	coffee :startup
+end
