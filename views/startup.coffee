@@ -1,5 +1,7 @@
 window.Game = {}
 
+RAD_TO_DEG = 180 / Math.PI
+
 # Shit to run first 
 # Box2D aliases
 window.b2Vec2 = Box2D.Common.Math.b2Vec2
