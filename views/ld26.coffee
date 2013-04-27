@@ -40,7 +40,7 @@ Game.state = ->
     # Create Terrain
     @terrain = new Game.Terrain()
 
-    Game.tank = new Game.Tank 10, 10
+    Game.tank = new Game.Tank 10, 30
 
     #setup debug draw
     debugDraw = new b2DebugDraw()

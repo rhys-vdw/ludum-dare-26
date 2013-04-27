@@ -16,8 +16,8 @@ class Game.Terrain
     ctx.moveTo 0, @points[0]
     for point, i in @points
       ctx.lineTo(i*@stepWidth, point)
-    ctx.lineTo(@points.length*@stepWidth, 50)
-    ctx.lineTo(0, 50)
+    ctx.lineTo(@points.length*@stepWidth, 250)
+    ctx.lineTo(0, 250)
     ctx.fill()
     ctx.scale(1/Game.SCALE, 1/Game.SCALE)
 
