@@ -106,7 +106,7 @@ class Game.Tank
     pos = new b2Vec2 @x, @y
     pos.Add @gunPosition()
 
-    force = @forwardVector();
+    force = @forwardVector()
     force.Multiply 30000
 
     new Game.Bullet pos, force
