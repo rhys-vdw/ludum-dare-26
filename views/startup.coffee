@@ -5,6 +5,7 @@ RAD_TO_DEG = 180 / Math.PI
 # Shit to run first 
 # Box2D aliases
 window.b2Vec2 = Box2D.Common.Math.b2Vec2
+window.b2Mat33 = Box2D.Common.Math.b2Mat33
 window.b2BodyDef = Box2D.Dynamics.b2BodyDef
 window.b2Body = Box2D.Dynamics.b2Body
 window.b2FixtureDef = Box2D.Dynamics.b2FixtureDef
@@ -19,13 +20,3 @@ window.b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef
 window.b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint
 window.b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
 
-# http:#paulirish.com/2011/requestanimationframe-for-smart-animating/
-window.requestAnimFrame =
-  do ->
-    return window.requestAnimationFrame       ||
-           window.webkitRequestAnimationFrame ||
-           window.mozRequestAnimationFrame    ||
-           window.oRequestAnimationFrame      ||
-           window.msRequestAnimationFrame     ||
-           (callback, element) ->
-             window.setTimeout callback, 1000 / 60

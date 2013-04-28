@@ -11,7 +11,7 @@ class Game.Tank
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position.x = x
     bodyDef.position.y = y
-    bodyDef.mass = 1
+    bodyDef.mass = 200
 
     # Create box for a shell.
     fixtureDef = new b2FixtureDef
@@ -23,8 +23,6 @@ class Game.Tank
 
     @body = Game.world.CreateBody bodyDef
     @body.CreateFixture fixtureDef
-
-    do @fire for i in [0..100]
 
     # Now lets add some wheels.
     wheelSpacing = width / (wheelCount - 1)
@@ -46,7 +44,7 @@ class Game.Tank
       motorDef.Initialize @body, wheel, wheelPos
       motorDef.enableMotor = true
       motorDef.motorSpeed = 20
-      motorDef.maxMotorTorque = Infinity
+      motorDef.maxMotorTorque = 50
 
       motor = Game.world.CreateJoint motorDef
 
@@ -55,8 +53,11 @@ class Game.Tank
       @wheels.push wheel
       @motors.push motor
 
+  Rad2Deg = 180 / Math.PI
 
   constructor: (x, y) ->
+    @bulletSpeed = 300
+    @gunOffset = new b2Vec2 2, -2
     @x = x*Game.SCALE
     @y = y*Game.SCALE
     @createTank(x, y)
@@ -68,22 +69,35 @@ class Game.Tank
 
     jaws.on_keydown 'space', @fire
 
+  gunPosition: ->
+    theta = @body.GetAngle()
+    x = 3
+    y = -2
+    cost = Math.cos theta
+    sint = Math.sin theta
+
+    return new b2Vec2 x * cost - y * sint, x * sint + y * cost
+
+  forwardVector: ->
+    rads = @body.GetAngle()
+    return new b2Vec2 Math.cos(rads), Math.sin(rads)
+
+
   fire: =>
-    console.log 'FIRE!'
-    force = 1000
-    ###
-    fx = force * Math.acos @body.GetAngle()
-    fy = force * Math.asin @body.GetAngle()
-    ###
-    fx = 1000
-    fy = 0
+    console.log "Fire!"
+    
+    # TODO: Remove scaling
+    pos = new b2Vec2 @x, @y
+    offset = @gunPosition()
+    offset.Multiply Game.SCALE
+    pos.Add offset
 
-    bullet = new Game.Bullet @x, @y - 1000, fx, fy
-    Game.Bullet.all.push bullet
+    #debugger;
 
-    console.log bullet
-    console.log Game.Bullet
-    console.log Game.Bullet.all
+    force = @forwardVector();
+    force.Multiply 30000
+
+    new Game.Bullet pos, force
 
   draw: ->
     for wheel in @wheels
@@ -96,9 +110,29 @@ class Game.Tank
 
     jaws.context.save()
     jaws.context.translate @x, @y
+    jaws.context.save()
     jaws.context.rotate @body.GetAngle()
     @sprite.draw()
+
+    gunPos = @gunPosition()
+    gunPos.Multiply Game.SCALE
+    # console.log gunPos
+    forward = @forwardVector()
+    forward.Multiply @bulletSpeed
+
+    line = gunPos.Copy()
+    line.Add forward
+
     jaws.context.restore()
+
+    jaws.context.beginPath()
+    jaws.context.moveTo gunPos.x, gunPos.y
+    jaws.context.lineTo line.x, line.y
+    jaws.context.strokeStyle = '#FF0000'
+    jaws.context.stroke()
+
+    jaws.context.restore()
+
 
   update: ->
     @x = @body.GetPosition().x * Game.SCALE
