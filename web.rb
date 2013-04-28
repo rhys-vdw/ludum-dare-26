@@ -26,3 +26,7 @@ end
 get '/terrain.js' do
 	coffee :terrain
 end
+
+get '/hud.js' do
+	coffee :hud
+end
