@@ -1,6 +1,5 @@
 jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png']
 
-TERRAIN_PREDRAW_THRESH = 500
 Game.SCALE = 20
 
 $ ->
@@ -69,9 +68,8 @@ Game.state = ->
     Game.world.ClearForces()
     Game.tank.update()
     @hud.update()
+    @terrain.update()
     @camera.update()
-    if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
-      @terrain.extend()
 
   draw: ->
     jaws.clear()
@@ -80,7 +78,7 @@ Game.state = ->
     @camera.apply =>
       Game.tank.draw()
       @terrain.draw()
-      #Game.world.DrawDebugData()
+      Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)
