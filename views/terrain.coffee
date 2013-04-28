@@ -7,7 +7,7 @@ class Game.Terrain
     @segments = []
     @stepWidth = 3
     @segmentGroupLength = 30
-    @displacement = 1
+    @displacement = 20
     # Number of segments ever
     @totalSegments = 0
     # Number of removed segments
