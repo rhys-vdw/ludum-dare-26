@@ -5,7 +5,7 @@ class Game.Terrain
     @segments = []
     @stepWidth = 3
     @segmentGroupLength = 80
-    @displacement = 30
+    @displacement = 22
     @extend()
 
   draw: ->

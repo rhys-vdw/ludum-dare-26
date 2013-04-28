@@ -11,7 +11,7 @@ class Game.Tank
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position.x = x
     bodyDef.position.y = y
-    bodyDef.mass = 1
+    bodyDef.mass = 200
 
     # Create box for a shell.
     fixtureDef = new b2FixtureDef
@@ -44,7 +44,7 @@ class Game.Tank
       motorDef.Initialize @body, wheel, wheelPos
       motorDef.enableMotor = true
       motorDef.motorSpeed = 20
-      motorDef.maxMotorTorque = Infinity
+      motorDef.maxMotorTorque = 50
 
       motor = Game.world.CreateJoint motorDef
 
