@@ -19,8 +19,6 @@ class Game.Camera
     @parallax = new jaws.Parallax({repeat_x: true})
     @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
     @xOffset = 5
-    jaws.on_keydown 'd', =>
-      @renderDebug = !@renderDebug
 
   update: ->
     # Move around the upcoming terrian on y
@@ -97,6 +95,8 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
+    @renderDebug = false
+    jaws.on_keydown 'd', => @renderDebug = !@renderDebug
 
     @jumphud = new Game.Hud({x: 10, y:10}, Game.JumpItem)
     @bullethud = new Game.Hud({x: 100, y:10}, Game.BulletItem)
