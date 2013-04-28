@@ -50,6 +50,7 @@ Game.state = ->
     Game.world.ClearForces()
     Game.tank.update()
     Game.camera.update()
+    Game.Bullet.all.update()
     @viewport.centerAround Game.camera
     if @viewport.x+@viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
       @terrain.extendBy(50)
@@ -57,8 +58,9 @@ Game.state = ->
   draw: ->
     jaws.clear()
     @viewport.apply =>
-      Game.world.DrawDebugData()
       Game.tank.draw()
+      # Game.Bullet.all.draw()
       @terrain.draw()
+      Game.world.DrawDebugData()
 
 

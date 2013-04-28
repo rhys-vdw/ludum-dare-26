@@ -24,6 +24,8 @@ class Game.Tank
     @body = Game.world.CreateBody bodyDef
     @body.CreateFixture fixtureDef
 
+    do @fire for i in [0..100]
+
     # Now lets add some wheels.
     wheelSpacing = width / (wheelCount - 1)
     @wheels = []
@@ -63,6 +65,25 @@ class Game.Tank
     for wheel in @wheels
       pos = wheel.GetPosition()
       wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
+
+    jaws.on_keydown 'space', @fire
+
+  fire: =>
+    console.log 'FIRE!'
+    force = 1000
+    ###
+    fx = force * Math.acos @body.GetAngle()
+    fy = force * Math.asin @body.GetAngle()
+    ###
+    fx = 1000
+    fy = 0
+
+    bullet = new Game.Bullet @x, @y - 1000, fx, fy
+    Game.Bullet.all.push bullet
+
+    console.log bullet
+    console.log Game.Bullet
+    console.log Game.Bullet.all
 
   draw: ->
     for wheel in @wheels
