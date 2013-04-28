@@ -19,6 +19,8 @@ class Game.Camera
     @parallax = new jaws.Parallax({repeat_x: true})
     @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
     @xOffset = 5
+    jaws.on_keydown 'd', =>
+      @renderDebug = !@renderDebug
 
   update: ->
     # Move around the upcoming terrian on y
@@ -123,7 +125,7 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      Game.world.DrawDebugData()
+      Game.world.DrawDebugData() if @renderDebug
 
     # Drawn relative to context
     #@hud.draw(@camera)

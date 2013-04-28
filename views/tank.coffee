@@ -81,7 +81,7 @@ class Game.Tank
     @x = x
     @y = y
     @createTank(x, y)
-    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -30, scale: 2.5, anchor: "center"}
+    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -10, scale: 2.5, anchor: "center"}
     @wheelSprites = []
     for wheel in @wheels
       pos = wheel.GetPosition()
@@ -94,7 +94,7 @@ class Game.Tank
   gunPosition: ->
     theta = @body.GetAngle()
     x = 3
-    y = -2.5
+    y = -1.5
     cost = Math.cos theta
     sint = Math.sin theta
 
