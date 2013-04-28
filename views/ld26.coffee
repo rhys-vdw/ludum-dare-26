@@ -95,7 +95,9 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
-    @hud = new Game.Hud
+
+    @jumphud = new Game.Hud({x: 10, y:10}, Game.JumpItem)
+    @bullethud = new Game.Hud({x: 100, y:10}, Game.BulletItem)
 
     @camera = new Game.Camera
 
@@ -111,7 +113,6 @@ Game.state = ->
 
     Game.entities.updateIf (e) -> e.update?
 
-    @hud.update()
     @terrain.update()
     @camera.update()
 
@@ -125,4 +126,6 @@ Game.state = ->
       Game.world.DrawDebugData()
 
     # Drawn relative to context
-    @hud.draw(@camera)
+    #@hud.draw(@camera)
+    @jumphud.draw()
+    @bullethud.draw()
