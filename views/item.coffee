@@ -42,11 +42,17 @@ class Game.Item
 
   onContactBegin: (c) =>
     if c.type is 'tank'
-      c.entity.jump()
-      @hasCollided = true
+      # Save the collision for use in update()
+      @collision = c
 
   isDead: ->
     @hasCollided
+
+  update: =>
+    if @collision
+      @doAction?(@collision)
+      @collision = null
+      @hasCollided = true
 
   onDestroy: ->
     Game.world.DestroyBody @body
@@ -55,3 +61,9 @@ class Game.Item
     @hasCollided = false
 
   draw: ->
+
+class Game.JumpItem extends Game.Item
+  doAction: (c) -> c.entity.jump()
+
+class Game.BulletItem extends Game.Item
+  doAction: (c) -> c.entity.fire()
