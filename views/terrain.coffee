@@ -89,7 +89,7 @@ class Game.Terrain
     groundFixtureDef = new b2FixtureDef
     groundFixtureDef.density = 1.0
     groundFixtureDef.friction = 0.2
-    groundFixtureDef.restitution = 0.2
+    groundFixtureDef.restitution = 0.05
     groundFixtureDef.shape = new b2PolygonShape
     groundFixtureDef.shape.SetAsOrientedBox length / 2, groundThickness, new b2Vec2(0, 0), rotation
     body = Game.world.CreateBody(bodyDef)

@@ -53,16 +53,50 @@ class Game.Tank
       @wheels.push wheel
       @motors.push motor
 
+  Rad2Deg = 180 / Math.PI
 
   constructor: (x, y) ->
-    @x = x*Game.SCALE
-    @y = y*Game.SCALE
+    @bulletSpeed = 300
+    @gunOffset = new b2Vec2 2, -2
+    @x = x
+    @y = y
     @createTank(x, y)
     @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -30, scale: 2.5, anchor: "center"}
     @wheelSprites = []
     for wheel in @wheels
       pos = wheel.GetPosition()
       wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
+
+    jaws.on_keydown 'space', @fire
+
+  gunPosition: ->
+    theta = @body.GetAngle()
+    x = 3
+    y = -2.5
+    cost = Math.cos theta
+    sint = Math.sin theta
+
+    return new b2Vec2 x * cost - y * sint, x * sint + y * cost
+
+  forwardVector: ->
+    rads = @body.GetAngle()
+    return new b2Vec2 Math.cos(rads), Math.sin(rads)
+
+
+  fire: =>
+    console.log "Fire!"
+    
+    debugger
+    # TODO: Remove scaling
+    pos = new b2Vec2 @x, @y
+    pos.Add @gunPosition()
+
+    #debugger;
+
+    force = @forwardVector();
+    force.Multiply 30000
+
+    new Game.Bullet pos, force
 
   draw: ->
     for wheel in @wheels
@@ -73,12 +107,38 @@ class Game.Tank
       wheel.sprite.draw()
       jaws.context.restore()
 
+    # Move to tank center
     jaws.context.save()
-    jaws.context.translate @x, @y
+    jaws.context.translate @x * Game.SCALE, @y * Game.SCALE
+
+    # Rotate and draw tank
+    jaws.context.save()
     jaws.context.rotate @body.GetAngle()
     @sprite.draw()
+
+    gunPos = @gunPosition()
+    gunPos.Multiply Game.SCALE
+    # console.log gunPos
+    forward = @forwardVector()
+    forward.Multiply @bulletSpeed
+
+    line = gunPos.Copy()
+    line.Add forward
+
+
+    # Draw that red line for showing gun pos.
+    # Unrotate first...
     jaws.context.restore()
 
+    jaws.context.beginPath()
+    jaws.context.moveTo gunPos.x, gunPos.y
+    jaws.context.lineTo line.x, line.y
+    jaws.context.strokeStyle = '#FF0000'
+    jaws.context.stroke()
+
+    jaws.context.restore()
+
+
   update: ->
-    @x = @body.GetPosition().x * Game.SCALE
-    @y = @body.GetPosition().y * Game.SCALE
+    @x = @body.GetPosition().x
+    @y = @body.GetPosition().y
