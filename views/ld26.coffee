@@ -19,15 +19,25 @@ class Game.Camera
     @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
 
   update: ->
-    # Move around the tank for now.
+    # Move around the tank on x
     @x = Game.tank.x + 500
-    @y = Game.tank.y
+    #@y = Game.tank.y
+
+    # Move around the upcoming terrian on y
+    stepsIn = @x/(jaws.game_state.terrain.stepWidth*Game.SCALE)
+    @targetY = jaws.game_state.terrain.points[ Math.round(stepsIn)+15 ]*Game.SCALE
+    @y = @moveTowards(@y, @targetY)
+
     @parallax.camera_x = @viewport.x
+    @parallax.camera_y = @viewport.y
     @viewport.centerAround this
 
   apply: (func) =>
     @parallax.draw()
     @viewport.apply func
+
+  moveTowards: (current, target) ->
+    return current + (target - current)/ 20
 
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
