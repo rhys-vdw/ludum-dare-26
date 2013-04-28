@@ -12,6 +12,7 @@ class Game.Tank
     bodyDef.position.x = x
     bodyDef.position.y = y
     bodyDef.mass = 200
+    bodyDef.userData = { type: "tank", entity: @ }
 
     # Create box for a shell.
     fixtureDef = new b2FixtureDef
@@ -32,6 +33,7 @@ class Game.Tank
       wheelPos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance
       bodyDef.position = wheelPos
       bodyDef.mass = 10
+      bodyDef.userData = { type: "tank", entity: @ }
       fixtureDef.shape = new b2CircleShape wheelRadius
       fixtureDef.restitution = 0
       fixtureDef.friction = 100
@@ -54,6 +56,7 @@ class Game.Tank
   Rad2Deg = 180 / Math.PI
 
   constructor: (x, y) ->
+    @groundedWheelCount = 0
     @bulletSpeed = 300
     @gunOffset = new b2Vec2 2, -2
     @x = x
@@ -66,6 +69,8 @@ class Game.Tank
       wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
 
     jaws.on_keydown 'space', @fire
+    jaws.on_keydown 'period', @jump
+    Game.entities.push @
 
   gunPosition: ->
     theta = @body.GetAngle()
@@ -80,6 +85,21 @@ class Game.Tank
     rads = @body.GetAngle()
     return new b2Vec2 Math.cos(rads), Math.sin(rads)
 
+  onContactBegin: (c) ->
+    if c?.type? && c.type == "ground"
+      @groundedWheelCount++
+      @isGrounded = @groundedWheelCount > 0
+
+  onContactEnd: (c) ->
+    if c?.type? && c.type == "ground"
+      @groundedWheelCount--
+      @isGrounded = @groundedWheelCount > 0
+
+  jump: =>
+    if @isGrounded
+      v = @body.GetLinearVelocity()
+      v.Add new b2Vec2 0, -100
+      @body.SetLinearVelocity v
 
   fire: =>
     console.log "Fire!"

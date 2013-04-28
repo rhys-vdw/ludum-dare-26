@@ -3,10 +3,13 @@ class Game.Bullet
   color = '#FFFFFF'
 
   constructor: (position, force)->
+    @bouncesLeft = 2
+
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position = position
     bodyDef.mass = 1
+    bodyDef.userData = { type: "bullet", entity: @ }
 
     fixtureDef = new b2FixtureDef
     fixtureDef.density = 1.0
@@ -20,9 +23,18 @@ class Game.Bullet
     @body.SetBullet true
     @body.SetLinearVelocity force
 
-    Game.Bullet.all.push @
+    Game.entities.push @
 
-  update: ->
+  onContactEnd: (c) ->
+    console.log "BOUNCE!"
+    @bouncesLeft--
+
+  isDead: ->
+    @bouncesLeft == 0
+
+  onDestroy: ->
+    console.log "destroyed bullet"
+    Game.world.DestroyBody @body
 
   draw: ->
     pos = @body.GetPosition().Copy()
@@ -34,5 +46,3 @@ class Game.Bullet
     jaws.context.fillStyle = color
     jaws.context.fill()
     jaws.context.translate -pos.x, -pos.y
-
-Game.Bullet.all = new jaws.SpriteList()
