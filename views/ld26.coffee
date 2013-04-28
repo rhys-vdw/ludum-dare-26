@@ -122,7 +122,7 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      #Game.world.DrawDebugData()
+      Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)

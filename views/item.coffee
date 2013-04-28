@@ -16,17 +16,6 @@ class Game.Item
     @createObject(position)
 
 
-    md = new b2MouseJointDef()
-    md.bodyA = Game.world.GetGroundBody()
-    md.bodyB = @body
-    md.target.Set(position.x, position.y)
-    md.collideConnected = true
-    md.dampingRatio = .9
-    md.maxForce = 300.0 * @body.GetMass()
-    console.log 'Making mouseJoint'
-    @mouseJoint = Game.world.CreateJoint(md)
-    @body.SetAwake(true)
-
     # Update the position on mouseMove
     @handleMouseMove(e)
     document.addEventListener("mousemove", @handleMouseMove, true)
@@ -34,18 +23,16 @@ class Game.Item
   handleMouseUp: (e) =>
     document.removeEventListener("mousemove", @handleMouseMove, true)
     @isMouseDown = false
-    # Detroy the joint
-    Game.world.DestroyJoint(@mouseJoint)
-    @mouseJoint = null
 
   handleMouseMove: (e) =>
+    console.count 'move'
     position = jaws.game_state.camera.screenToWorldPosition(new b2Vec2(e.clientX - jaws.canvas.getBoundingClientRect().left, e.clientY - jaws.canvas.getBoundingClientRect().top))
-    @mouseJoint.SetTarget(position)
+    @body.SetPosition(position)
 
   createObject: (position) =>
     bodyDef = new b2BodyDef
-    bodyDef.type = b2Body.b2_dynamicBody
-    bodyDef.position = position
+    bodyDef.type = b2Body.b2_kinematicBody
+    bodyDef.position.Set(position.x, position.y)
 
     groundFixtureDef = new b2FixtureDef
     groundFixtureDef.density = 1.0
