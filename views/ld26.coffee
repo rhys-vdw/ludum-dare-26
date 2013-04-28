@@ -6,6 +6,7 @@ Game.EXTEND_LENGTH = 80
 $ ->
   Game.width = $(document).width()
   $('#game').attr width: Game.width, height: $(document).height()
+  console.log "wtf"
   jaws.start Game.state, fps: 60
 
   Game.entities = new jaws.SpriteList()
@@ -85,11 +86,9 @@ Game.state = ->
 
     # Create Terrain
     @terrain = new Game.Terrain()
+    @worldEnd = 0
 
     Game.tank = new Game.Tank 10, 30
-
-    for i in [10..300]
-      new Game.Jumper x: i * 5, y: 20
 
     #setup debug draw
     debugDraw = new b2DebugDraw()
@@ -102,6 +101,21 @@ Game.state = ->
     @hud = new Game.Hud
 
     @camera = new Game.Camera
+
+  randomRange: (min, max) ->
+    return min + Math.random() * (max - min)
+
+  populate: (start, end, min, max) ->
+    console.log start, end, min, max
+    console.log "populating [#{start}, #{end}]"
+    i = start + @randomRange(min, max)
+    count = 0
+    while i < end
+      new Game.Jumper x: i, y: 0
+      count++
+      i += @randomRange(min, max)
+    console.log "...created #{count} Jumpers"
+
 
   update: ->
     Game.world.Step Game.deltaTime()*0.5, 10, 10
@@ -118,10 +132,11 @@ Game.state = ->
     @hud.update()
 
     if @camera.viewport.x + @camera.viewport.width + Game.EXTEND_LENGTH > @terrain.x * Game.SCALE
-      @extend()
+      length = @terrain.extend()
+      @populate @worldEnd, @worldEnd + length, 3, 10
+      @worldEnd += length
 
     @camera.update()
-
 
   draw: ->
     jaws.clear()
