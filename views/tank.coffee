@@ -58,8 +58,8 @@ class Game.Tank
   constructor: (x, y) ->
     @bulletSpeed = 300
     @gunOffset = new b2Vec2 2, -2
-    @x = x*Game.SCALE
-    @y = y*Game.SCALE
+    @x = x
+    @y = y
     @createTank(x, y)
     @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -30, scale: 2.5, anchor: "center"}
     @wheelSprites = []
@@ -108,8 +108,16 @@ class Game.Tank
       wheel.sprite.draw()
       jaws.context.restore()
 
+    # Move to tank center
     jaws.context.save()
-    jaws.context.translate @x, @y
+    jaws.context.translate @x * Game.SCALE, @y * Game.SCALE
+
+    # Draw circle for debugging.
+    jaws.context.beginPath()
+    jaws.context.arc 0, 0, 4 * Game.SCALE, 0, Math.PI*2, true
+    jaws.context.closePath()
+    jaws.context.fillStyle = "#FFFFFFF"
+
     jaws.context.save()
     jaws.context.rotate @body.GetAngle()
     @sprite.draw()
@@ -135,5 +143,5 @@ class Game.Tank
 
 
   update: ->
-    @x = @body.GetPosition().x * Game.SCALE
-    @y = @body.GetPosition().y * Game.SCALE
+    @x = @body.GetPosition().x
+    @y = @body.GetPosition().y
