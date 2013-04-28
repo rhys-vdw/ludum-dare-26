@@ -50,6 +50,7 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
+    @hud = new Game.Hud
 
     @camera = new Game.Camera
 
@@ -58,7 +59,7 @@ Game.state = ->
     Game.world.ClearForces()
     Game.tank.update()
     Game.Bullet.all.update()
-
+    @hud.update()
     @camera.update()
     if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
       @terrain.extend()
@@ -66,13 +67,12 @@ Game.state = ->
   draw: ->
     jaws.clear()
 
-
-  draw: ->
-    jaws.clear()
+    # Drawn relative to viewport
     @camera.apply =>
       Game.tank.draw()
       Game.Bullet.all.draw()
       @terrain.draw()
       # Game.world.DrawDebugData()
 
-
+    # Drawn relative to context
+    @hud.draw(@camera)

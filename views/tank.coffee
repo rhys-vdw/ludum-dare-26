@@ -104,7 +104,7 @@ class Game.Tank
       pos = wheel.GetPosition()
       jaws.context.save()
       jaws.context.translate pos.x * Game.SCALE, pos.y * Game.SCALE 
-      jaws.context.rotate wheel.GetAngle();
+      jaws.context.rotate wheel.GetAngle()
       wheel.sprite.draw()
       jaws.context.restore()
 
