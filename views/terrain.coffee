@@ -1,24 +1,17 @@
 FROMTOP = 40
-TERRAIN_PREDRAW_THRESH = 80
 
 class Game.Terrain
   constructor: ->
     @points = [FROMTOP]
     @segments = []
     @stepWidth = 3
-    @segmentGroupLength = 30
+    @segmentGroupCount = 30
     @displacement = 20
     # Number of segments ever
     @totalSegments = 0
     # Number of removed segments
     @torndownSegments = 0
-
-    @extend()
-
-  update: ->
-    if jaws.game_state.camera.viewport.x + jaws.game_state.camera.viewport.width + TERRAIN_PREDRAW_THRESH > @x * Game.SCALE
-      @extend()
-
+    @x = 0
 
   draw: ->
     xoff = @torndownSegments*@stepWidth
@@ -45,23 +38,24 @@ class Game.Terrain
   extend: ->
     pointsCount = @points.length
     # Stub the new points as average distance from top
-    @points[pointsCount..pointsCount+@segmentGroupLength] = (FROMTOP for num in [1..@segmentGroupLength])
+    @points[pointsCount..pointsCount+@segmentGroupCount] = (FROMTOP for num in [1..@segmentGroupCount])
     # Augment points with midpoint displacement
     @midPoint(pointsCount-1, @points.length-1, @displacement, 0.50)
     # Create segments
     @createSegments @points[pointsCount-1..], @stepWidth
     # Incremement starting x position for future segments
-    @totalSegments += @segmentGroupLength
+    @totalSegments += @segmentGroupCount
 
     # Teardown old segments
     if @segments.length > 100
-      teardownSegments = @segments[0..@segmentGroupLength-1]
-      @segments = @segments[@segmentGroupLength..]
-      @points = @points[@segmentGroupLength..]
+      teardownSegments = @segments[0..@segmentGroupCount-1]
+      @segments = @segments[@segmentGroupCount..]
+      @points = @points[@segmentGroupCount..]
       for segment in teardownSegments
         Game.world.DestroyBody segment
       # Incremement starting x position for draw function
-      @torndownSegments += @segmentGroupLength
+      @torndownSegments += @segmentGroupCount
+    return @segmentGroupCount * @stepWidth
 
   createSegments: (heights, stepWidth) ->
     for i in [1...heights.length]
