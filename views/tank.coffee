@@ -72,7 +72,7 @@ class Game.Tank
   gunPosition: ->
     theta = @body.GetAngle()
     x = 3
-    y = -2
+    y = -2.5
     cost = Math.cos theta
     sint = Math.sin theta
 
@@ -86,11 +86,10 @@ class Game.Tank
   fire: =>
     console.log "Fire!"
     
+    debugger
     # TODO: Remove scaling
     pos = new b2Vec2 @x, @y
-    offset = @gunPosition()
-    offset.Multiply Game.SCALE
-    pos.Add offset
+    pos.Add @gunPosition()
 
     #debugger;
 
@@ -112,12 +111,7 @@ class Game.Tank
     jaws.context.save()
     jaws.context.translate @x * Game.SCALE, @y * Game.SCALE
 
-    # Draw circle for debugging.
-    jaws.context.beginPath()
-    jaws.context.arc 0, 0, 4 * Game.SCALE, 0, Math.PI*2, true
-    jaws.context.closePath()
-    jaws.context.fillStyle = "#FFFFFFF"
-
+    # Rotate and draw tank
     jaws.context.save()
     jaws.context.rotate @body.GetAngle()
     @sprite.draw()
@@ -131,6 +125,9 @@ class Game.Tank
     line = gunPos.Copy()
     line.Add forward
 
+
+    # Draw that red line for showing gun pos.
+    # Unrotate first...
     jaws.context.restore()
 
     jaws.context.beginPath()

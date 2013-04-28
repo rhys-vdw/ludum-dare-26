@@ -3,6 +3,7 @@ class Game.Bullet
   color = '#FFFFFF'
 
   constructor: (position, force)->
+    debugger
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position = position
@@ -11,7 +12,7 @@ class Game.Bullet
     fixtureDef = new b2FixtureDef
     fixtureDef.density = 1.0
     fixtureDef.friction = 0.2
-    fixtureDef.restitution = 0.5
+    fixtureDef.restitution = 0.02
     fixtureDef.shape = new b2CircleShape radius
 
     @body = Game.world.CreateBody bodyDef
