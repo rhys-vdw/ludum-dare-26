@@ -1,23 +1,36 @@
 FROMTOP = 40
+TERRAIN_PREDRAW_THRESH = 80
+
 class Game.Terrain
   constructor: ->
     @points = [FROMTOP]
     @segments = []
     @stepWidth = 3
-    @segmentGroupLength = 80
-    @displacement = 22
+    @segmentGroupLength = 30
+    @displacement = 20
+    # Number of segments ever
+    @totalSegments = 0
+    # Number of removed segments
+    @torndownSegments = 0
+
     @extend()
 
+  update: ->
+    if jaws.game_state.camera.viewport.x + jaws.game_state.camera.viewport.width + TERRAIN_PREDRAW_THRESH > @x * Game.SCALE
+      @extend()
+
+
   draw: ->
+    xoff = @torndownSegments*@stepWidth
     ctx = jaws.context
     ctx.scale(Game.SCALE, Game.SCALE)
     ctx.fillStyle = "black"
     ctx.beginPath()
-    ctx.moveTo 0, @points[0]
+    ctx.moveTo xoff, @points[0]
     for point, i in @points
-      ctx.lineTo(i*@stepWidth, point)
-    ctx.lineTo(@points.length*@stepWidth, 250)
-    ctx.lineTo(0, 250)
+      ctx.lineTo(i*@stepWidth+xoff, point)
+    ctx.lineTo(@points.length*@stepWidth+xoff, 250)
+    ctx.lineTo(xoff, 250)
     ctx.fill()
     ctx.scale(1/Game.SCALE, 1/Game.SCALE)
 
@@ -30,18 +43,31 @@ class Game.Terrain
     @midPoint(middle, end, maxElevation*sharpness, sharpness)
 
   extend: ->
-    segmentCount = @segmentCount()
-    @points[segmentCount..segmentCount+@segmentGroupLength] = (FROMTOP for num in [1..@segmentGroupLength])
-    @midPoint(segmentCount-1, @segmentCount()-1, @displacement, 0.50)
-    @createGround @points[segmentCount-1..@segmentCount-1], @stepWidth, segmentCount-1
-    #TODO: trash old points
-    console.log "Array is #{@segmentCount()} long"
+    pointsCount = @points.length
+    # Stub the new points as average distance from top
+    @points[pointsCount..pointsCount+@segmentGroupLength] = (FROMTOP for num in [1..@segmentGroupLength])
+    # Augment points with midpoint displacement
+    @midPoint(pointsCount-1, @points.length-1, @displacement, 0.50)
+    # Create segments
+    @createSegments @points[pointsCount-1..], @stepWidth
+    # Incremement starting x position for future segments
+    @totalSegments += @segmentGroupLength
 
-  createGround: (heights, stepWidth, startFrom) ->
+    # Teardown old segments
+    if @segments.length > 100
+      teardownSegments = @segments[0..@segmentGroupLength-1]
+      @segments = @segments[@segmentGroupLength..]
+      @points = @points[@segmentGroupLength..]
+      for segment in teardownSegments
+        Game.world.DestroyBody segment
+      # Incremement starting x position for draw function
+      @torndownSegments += @segmentGroupLength
+
+  createSegments: (heights, stepWidth) ->
     for i in [1...heights.length]
-      xa = stepWidth * (i - 1 + startFrom)
+      xa = stepWidth * (i - 1 + @totalSegments)
       ya = heights[i - 1]
-      xb = stepWidth * (i + startFrom)
+      xb = stepWidth * (i + @totalSegments)
       yb = heights[i]
       @segments.push @createSegment xa, ya, xb, yb
     @x = xb
@@ -73,7 +99,4 @@ class Game.Terrain
     body = Game.world.CreateBody(bodyDef)
     body.CreateFixture(groundFixtureDef)
     body
-
-  segmentCount: -> @points.length
-
 

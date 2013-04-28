@@ -5,28 +5,12 @@ class Game.Hud
     @fromTop = 20
     @ctx = jaws.context
     @setHudPos()
-    
     @rect = new jaws.Rect(@xywh...)
+
+    @jumpItem = new Game.Item
 
     #jaws.on_keydown 'left_mouse_button', @mouseDown
 
-    jaws.canvas.addEventListener "mousedown", (e) =>
-       @isMouseDown = true
-       @handleMouseMove(e)
-       document.addEventListener("mousemove", @handleMouseMove, true)
-    , true
-    
-    jaws.canvas.addEventListener "mouseup", (e) =>
-       document.removeEventListener("mousemove", @handleMouseMove, true)
-       @isMouseDown = false
-       @mouseX = undefined
-       @mouseY = undefined
-    , true
-    
-  handleMouseMove: (e) =>
-    @mouseX = (e.clientX - jaws.canvas.getBoundingClientRect().left) / Game.SCALE
-    @mouseY = (e.clientY - jaws.canvas.getBoundingClientRect().top) / Game.SCALE
-    console.log @mouseX, @mouseY
 
   update: ->
   ###

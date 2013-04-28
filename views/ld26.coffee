@@ -1,6 +1,5 @@
 jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png']
 
-TERRAIN_PREDRAW_THRESH = 500
 Game.SCALE = 20
 
 $ ->
@@ -45,6 +44,13 @@ class Game.Camera
 
   moveTowards: (current, target) ->
     return current + (target - current)/ 20
+
+  screenToWorldPosition: (vector) ->
+    worldPos = vector.Copy()
+    worldPos.Add new b2Vec2(@viewport.x, @viewport.y)
+    worldPos.Multiply(1/Game.SCALE)
+    return worldPos
+
 
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
@@ -106,9 +112,8 @@ Game.state = ->
     Game.entities.updateIf (e) -> e.update?
 
     @hud.update()
+    @terrain.update()
     @camera.update()
-    if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
-      @terrain.extend()
 
   draw: ->
     jaws.clear()
@@ -117,7 +122,7 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      # Game.world.DrawDebugData()
+      Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)

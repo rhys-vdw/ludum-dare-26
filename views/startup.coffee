@@ -19,4 +19,4 @@ window.b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint
 window.b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef
 window.b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint
 window.b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
-
+window.b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
