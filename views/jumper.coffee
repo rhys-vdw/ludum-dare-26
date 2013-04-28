@@ -21,7 +21,6 @@ class Game.Jumper
     return body
 
   constructor: (options) ->
-    console.log "creating jumper"
     @jumpPeriod   = options?.jumpPeriod   ? 10
     @jumpVelocity = options?.jumpVelocity ? 40
     @timeSinceLastJump = 0
