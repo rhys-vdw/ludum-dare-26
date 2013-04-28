@@ -90,7 +90,7 @@ Game.state = ->
       Game.tank.draw()
       Game.Bullet.all.draw()
       @terrain.draw()
-      Game.world.DrawDebugData()
+      #Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)
