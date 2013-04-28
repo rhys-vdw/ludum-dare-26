@@ -5,6 +5,7 @@ class Game.Item
     @hasCollided = false
     
   handleMouseDown: (e) =>
+    @mouseDown = true
     return if @body?
     jaws.canvas.addEventListener "mouseup", @handleMouseUp, true
     # Create object under cursor
@@ -15,6 +16,7 @@ class Game.Item
     document.addEventListener("mousemove", @handleMouseMove, true)
 
   handleMouseUp: (e) =>
+    @mouseDown = false
     document.removeEventListener("mousemove", @handleMouseMove, true)
 
   handleMouseMove: (e) =>
@@ -41,6 +43,7 @@ class Game.Item
 
 
   onContactBegin: (c) =>
+    return if @mouseDown
     if c.type is 'tank'
       # Save the collision for use in update()
       @collision = c

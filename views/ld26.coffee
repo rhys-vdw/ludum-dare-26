@@ -21,6 +21,8 @@ class Game.Camera
     @parallax = new jaws.Parallax({repeat_x: true})
     @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
     @xOffset = 5
+    jaws.on_keydown 'd', =>
+      @renderDebug = !@renderDebug
 
   update: ->
     # Move around the upcoming terrian on y
@@ -98,7 +100,9 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
-    @hud = new Game.Hud
+
+    @jumphud = new Game.Hud({x: 10, y:10}, Game.JumpItem)
+    @bullethud = new Game.Hud({x: 100, y:10}, Game.BulletItem)
 
     @camera = new Game.Camera
 
@@ -129,8 +133,6 @@ Game.state = ->
 
     Game.entities.updateIf (e) -> e.update?
 
-    @hud.update()
-
     if @camera.viewport.x + @camera.viewport.width + Game.EXTEND_LENGTH > @terrain.x * Game.SCALE
       length = @terrain.extend()
       @populate @worldEnd, @worldEnd + length, 3, 10
@@ -145,7 +147,9 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      # Game.world.DrawDebugData()
+      Game.world.DrawDebugData() if @renderDebug
 
     # Drawn relative to context
-    @hud.draw(@camera)
+    #@hud.draw(@camera)
+    @jumphud.draw()
+    @bullethud.draw()
