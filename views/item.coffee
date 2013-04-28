@@ -1,7 +1,7 @@
 class Game.Item
   constructor: ->
-    @width = 1
-    @height = 1
+    @width = 1.5
+    @height = 1.5
     @hasCollided = false
     
   handleMouseDown: (e) =>
@@ -64,9 +64,22 @@ class Game.Item
     @hasCollided = false
 
   draw: ->
+    pos = @body.GetPosition()
+    jaws.context.save()
+    jaws.context.translate pos.x * Game.SCALE, pos.y * Game.SCALE
+    jaws.context.rotate @body.GetAngle()
+    @sprite.draw()
+    jaws.context.restore()
 
 class Game.JumpItem extends Game.Item
+  constructor: ->
+    @sprite = new jaws.Sprite {image: "sprites/command-jump.png", x: 0, y: 0, scale: 2, anchor: "center"}
+    super
+
   doAction: (c) -> c.entity.jump()
 
 class Game.BulletItem extends Game.Item
+  constructor: ->
+    @sprite = new jaws.Sprite {image: "sprites/command-fire.png", x: 0, y: 0, scale: 2, anchor: "center"}
+    super
   doAction: (c) -> c.entity.fire()

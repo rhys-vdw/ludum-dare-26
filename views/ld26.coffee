@@ -1,4 +1,4 @@
-jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png', 'sprites/jumper.png']
+jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png', 'sprites/jumper.png', 'sprites/command-fire.png', 'sprites/command-jump.png']
 
 Game.SCALE = 20
 Game.EXTEND_LENGTH = 80
