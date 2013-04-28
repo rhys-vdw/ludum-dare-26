@@ -62,6 +62,7 @@ class Game.Terrain
     bodyDef.type = b2Body.b2_staticBody
     bodyDef.position.x = xa + xDelta / 2 + xoffset
     bodyDef.position.y = ya + yDelta / 2 + yoffset
+    bodyDef.userData = { type: "ground" }
 
     groundFixtureDef = new b2FixtureDef
     groundFixtureDef.density = 1.0

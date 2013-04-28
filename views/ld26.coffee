@@ -57,8 +57,8 @@ Game.state = ->
     applyToFixtures = (c, eventName) ->
       a = c.GetFixtureA().GetBody().GetUserData()
       b = c.GetFixtureB().GetBody().GetUserData()
-      a?.entity[eventName]?(b)
-      b?.entity[eventName]?(a)
+      a?.entity?[eventName]?(b)
+      b?.entity?[eventName]?(a)
 
     contactListener = {
       BeginContact: (c) ->
