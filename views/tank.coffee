@@ -30,7 +30,6 @@ class Game.Tank
     @motors = []
     for i in [0...wheelCount]
       wheelPos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance
-      console.log wheelPos
       bodyDef.position = wheelPos
       bodyDef.mass = 10
       fixtureDef.shape = new b2CircleShape wheelRadius
@@ -48,7 +47,6 @@ class Game.Tank
 
       motor = Game.world.CreateJoint motorDef
 
-      console.log motorDef, motor
 
       @wheels.push wheel
       @motors.push motor
@@ -86,12 +84,8 @@ class Game.Tank
   fire: =>
     console.log "Fire!"
     
-    debugger
-    # TODO: Remove scaling
     pos = new b2Vec2 @x, @y
     pos.Add @gunPosition()
-
-    #debugger;
 
     force = @forwardVector();
     force.Multiply 30000

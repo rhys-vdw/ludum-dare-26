@@ -3,7 +3,6 @@ class Game.Bullet
   color = '#FFFFFF'
 
   constructor: (position, force)->
-    debugger
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position = position

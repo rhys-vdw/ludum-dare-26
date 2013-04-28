@@ -23,8 +23,6 @@ class Game.Camera
     targetY = jaws.game_state.terrain.points[ Math.round(stepsIn)+15 ]
     # y = @moveTowards(@viewport.y - @viewport.height / 2, targetY)
 
-    console.log targetY
-
     focalPoint = new b2Vec2(Game.tank.x + @xOffset, Game.tank.y)
 
     @centerAroundWorldPosition focalPoint
@@ -86,7 +84,7 @@ Game.state = ->
       Game.tank.draw()
       Game.Bullet.all.draw()
       @terrain.draw()
-      # Game.world.DrawDebugData()
+      #Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)
