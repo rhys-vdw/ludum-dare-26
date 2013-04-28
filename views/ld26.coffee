@@ -13,24 +13,30 @@ class Game.Camera
   constructor: ->
     # Setup viewport
     @viewport = new jaws.Viewport({max_x: Infinity, max_y: Infinity})
-    @x = 100
-    @y = 100
     @parallax = new jaws.Parallax({repeat_x: true})
     @parallax.addLayer({image: "sprites/hills-1.png", damping: 4, scale: 4})
+    @xOffset = 5
 
   update: ->
-    # Move around the tank on x
-    @x = Game.tank.x + 500
-    #@y = Game.tank.y
-
     # Move around the upcoming terrian on y
-    stepsIn = @x/(jaws.game_state.terrain.stepWidth*Game.SCALE)
-    @targetY = jaws.game_state.terrain.points[ Math.round(stepsIn)+15 ]*Game.SCALE
-    @y = @moveTowards(@y, @targetY)
+    stepsIn = @viewport.x / Game.SCALE / jaws.game_state.terrain.stepWidth
 
+    targetY = jaws.game_state.terrain.points[ Math.round(stepsIn)+15 ]
+    # y = @moveTowards(@viewport.y - @viewport.height / 2, targetY)
+
+    console.log targetY
+
+    focalPoint = new b2Vec2(Game.tank.x + @xOffset, Game.tank.y)
+
+    @centerAroundWorldPosition focalPoint
     @parallax.camera_x = @viewport.x
     @parallax.camera_y = @viewport.y
-    @viewport.centerAround this
+
+  centerAroundWorldPosition: (position) ->
+    screenPosition = position.Copy()
+    screenPosition.Multiply Game.SCALE
+    @viewport.centerAround screenPosition
+
 
   apply: (func) =>
     @parallax.draw()
