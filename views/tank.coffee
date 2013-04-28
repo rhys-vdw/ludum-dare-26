@@ -63,7 +63,7 @@ class Game.Tank
       springDef.enableLimit = true
       springDef.limi = true
       springDef.enableMotor = true
-      springDef.maxMotorForce = 6
+      springDef.maxMotorForce = 8
       springDef.motorSpeed = 4
       pos = wheelPos.Copy()
       springDef.Initialize @body, axle, pos, new b2Vec2(0,1)
