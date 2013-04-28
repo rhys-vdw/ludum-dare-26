@@ -68,6 +68,7 @@ class Game.Tank
       wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
 
     jaws.on_keydown 'space', @fire
+    Game.entities.push @
 
   gunPosition: ->
     theta = @body.GetAngle()

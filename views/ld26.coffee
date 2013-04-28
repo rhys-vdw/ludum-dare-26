@@ -8,6 +8,10 @@ $ ->
   $('#game').attr width: Game.width, height: $(document).height()
   jaws.start Game.state, fps: 60
 
+  Game.entities = new jaws.SpriteList()
+
+  console.dir Game.entities
+
 
 class Game.Camera
   constructor: ->
@@ -24,8 +28,6 @@ class Game.Camera
     targetY = jaws.game_state.terrain.points[ Math.round(stepsIn)+15 ]
     # y = @moveTowards(@viewport.y - @viewport.height / 2, targetY)
 
-    console.log targetY
-
     focalPoint = new b2Vec2(Game.tank.x + @xOffset, Game.tank.y)
 
     @centerAroundWorldPosition focalPoint
@@ -36,7 +38,6 @@ class Game.Camera
     screenPosition = position.Copy()
     screenPosition.Multiply Game.SCALE
     @viewport.centerAround screenPosition
-
 
   apply: (func) =>
     @parallax.draw()
@@ -52,6 +53,28 @@ Game.state = ->
   setup: ->
     gravity = new b2Vec2 0, 18
     Game.world = new b2World gravity, true
+
+    applyToFixtures = (c, eventName) ->
+      a = c.GetFixtureA().GetBody().GetUserData()
+      b = c.GetFixtureB().GetBody().GetUserData()
+      a?.entity[eventName]?(b)
+      b?.entity[eventName]?(a)
+
+    contactListener = {
+      BeginContact: (c) ->
+        applyToFixtures c, "onContactBegin"
+
+      EndContact: (c) ->
+        applyToFixtures c, "onContactEnd"
+
+      PostSolve: (c) ->
+        applyToFixtures c, "onContactPostSolve"
+
+      PreSolve: (c) ->
+        applyToFixtures c, "onContactPreSolve"
+    }
+
+    Game.world.SetContactListener contactListener
 
     # Create Terrain
     @terrain = new Game.Terrain()
@@ -73,8 +96,15 @@ Game.state = ->
   update: ->
     Game.world.Step Game.deltaTime()*0.5, 10, 10
     Game.world.ClearForces()
-    Game.tank.update()
-    Game.Bullet.all.update()
+
+    Game.entities.deleteIf (e) ->
+      isDead = e.isDead? && e.isDead() == true
+      if isDead && e.onDestroy?
+        e.onDestroy()
+      return isDead
+
+    Game.entities.updateIf (e) -> e.update?
+
     @hud.update()
     @camera.update()
     if @camera.viewport.x+@camera.viewport.width+TERRAIN_PREDRAW_THRESH > @terrain.x*Game.SCALE
@@ -85,8 +115,7 @@ Game.state = ->
 
     # Drawn relative to viewport
     @camera.apply =>
-      Game.tank.draw()
-      Game.Bullet.all.draw()
+      Game.entities.draw()
       @terrain.draw()
       # Game.world.DrawDebugData()
 
