@@ -1,10 +1,12 @@
-jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png']
+jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png', 'sprites/jumper.png', 'sprites/command-fire.png', 'sprites/command-jump.png']
 
 Game.SCALE = 20
+Game.EXTEND_LENGTH = 80
 
 $ ->
   Game.width = $(document).width()
   $('#game').attr width: Game.width, height: $(document).height()
+  console.log "wtf"
   jaws.start Game.state, fps: 60
 
   Game.entities = new jaws.SpriteList()
@@ -84,6 +86,7 @@ Game.state = ->
 
     # Create Terrain
     @terrain = new Game.Terrain()
+    @worldEnd = 0
 
     Game.tank = new Game.Tank 10, 30
 
@@ -95,9 +98,28 @@ Game.state = ->
     debugDraw.SetLineThickness 1.0
     debugDraw.SetFlags b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit
     Game.world.SetDebugDraw debugDraw
-    @hud = new Game.Hud
+    @renderDebug = false
+    jaws.on_keydown 'd', => @renderDebug = !@renderDebug
+
+    @jumphud = new Game.Hud({x: 10, y:10}, Game.JumpItem)
+    @bullethud = new Game.Hud({x: 100, y:10}, Game.BulletItem)
 
     @camera = new Game.Camera
+
+  randomRange: (min, max) ->
+    return min + Math.random() * (max - min)
+
+  populate: (start, end, min, max) ->
+    console.log start, end, min, max
+    console.log "populating [#{start}, #{end}]"
+    i = start + @randomRange(min, max)
+    count = 0
+    while i < end
+      new Game.Jumper x: i, y: 0
+      count++
+      i += @randomRange(min, max)
+    console.log "...created #{count} Jumpers"
+
 
   update: ->
     Game.world.Step Game.deltaTime()*0.5, 10, 10
@@ -111,8 +133,11 @@ Game.state = ->
 
     Game.entities.updateIf (e) -> e.update?
 
-    @hud.update()
-    @terrain.update()
+    if @camera.viewport.x + @camera.viewport.width + Game.EXTEND_LENGTH > @terrain.x * Game.SCALE
+      length = @terrain.extend()
+      @populate @worldEnd, @worldEnd + length, 3, 10
+      @worldEnd += length
+
     @camera.update()
 
   draw: ->
@@ -122,7 +147,9 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      #Game.world.DrawDebugData()
+      Game.world.DrawDebugData() if @renderDebug
 
     # Drawn relative to context
-    @hud.draw(@camera)
+    #@hud.draw(@camera)
+    @jumphud.draw()
+    @bullethud.draw()

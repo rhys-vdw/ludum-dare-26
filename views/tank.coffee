@@ -1,7 +1,7 @@
 class Game.Tank
   width = 5
   height = 0.2
-  clearance = -0.2
+  clearance = 1
   wheelCount = 5
   wheelRadius = 0.4
 
@@ -30,7 +30,8 @@ class Game.Tank
     @wheels = []
     @motors = []
     for i in [0...wheelCount]
-      wheelPos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance
+      lift = if i == 0 or i == wheelCount-1 then -0.2 else 0
+      wheelPos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance + lift
       bodyDef.position = wheelPos
       bodyDef.mass = 10
       bodyDef.userData = { type: "tank", entity: @ }
@@ -41,14 +42,32 @@ class Game.Tank
       wheel = Game.world.CreateBody bodyDef
       wheel.CreateFixture fixtureDef
 
+      bodyDef.position = wheelPos
+      fixtureDef.shape = new b2PolygonShape
+      fixtureDef.shape.SetAsBox wheelRadius/2, wheelRadius/2
+      axle = Game.world.CreateBody bodyDef
+      axle.CreateFixture fixtureDef
+
+      # Wheel to axle
       motorDef = new b2RevoluteJointDef
-      motorDef.Initialize @body, wheel, wheelPos
+      motorDef.Initialize axle, wheel, wheelPos
       motorDef.enableMotor = true
       motorDef.motorSpeed = 20
       motorDef.maxMotorTorque = 50
-
       motor = Game.world.CreateJoint motorDef
 
+      # Axle to body
+      springDef = new b2PrismaticJointDef
+      springDef.lowerTranslation = -0.3
+      springDef.upperTranslation = 0
+      springDef.enableLimit = true
+      springDef.limi = true
+      springDef.enableMotor = true
+      springDef.maxMotorForce = 8
+      springDef.motorSpeed = 4
+      pos = wheelPos.Copy()
+      springDef.Initialize @body, axle, pos, new b2Vec2(0,1)
+      spring = Game.world.CreateJoint springDef
 
       @wheels.push wheel
       @motors.push motor
@@ -62,7 +81,7 @@ class Game.Tank
     @x = x
     @y = y
     @createTank(x, y)
-    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -30, scale: 2.5, anchor: "center"}
+    @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -10, scale: 2.5, anchor: "center"}
     @wheelSprites = []
     for wheel in @wheels
       pos = wheel.GetPosition()
@@ -75,7 +94,7 @@ class Game.Tank
   gunPosition: ->
     theta = @body.GetAngle()
     x = 3
-    y = -2.5
+    y = -1.5
     cost = Math.cos theta
     sint = Math.sin theta
 
@@ -107,7 +126,7 @@ class Game.Tank
     pos = new b2Vec2 @x, @y
     pos.Add @gunPosition()
 
-    force = @forwardVector();
+    force = @forwardVector()
     force.Multiply 30000
 
     new Game.Bullet pos, force
@@ -147,7 +166,7 @@ class Game.Tank
     jaws.context.beginPath()
     jaws.context.moveTo gunPos.x, gunPos.y
     jaws.context.lineTo line.x, line.y
-    jaws.context.strokeStyle = '#FF0000'
+    jaws.context.strokeStyle = 'rgba(255, 0, 0, 0.2)'
     jaws.context.stroke()
 
     jaws.context.restore()
