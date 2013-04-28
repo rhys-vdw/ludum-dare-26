@@ -34,3 +34,7 @@ end
 get '/hud.js' do
 	coffee :hud
 end
+
+get '/item.js' do
+	coffee :item
+end

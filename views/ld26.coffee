@@ -34,13 +34,19 @@ class Game.Camera
     screenPosition.Multiply Game.SCALE
     @viewport.centerAround screenPosition
 
-
   apply: (func) =>
     @parallax.draw()
     @viewport.apply func
 
   moveTowards: (current, target) ->
     return current + (target - current)/ 20
+
+  screenToWorldPosition: (vector) ->
+    worldPos = vector.Copy()
+    worldPos.Add new b2Vec2(@viewport.x, @viewport.y)
+    worldPos.Multiply(1/Game.SCALE)
+    return worldPos
+
 
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
@@ -84,7 +90,7 @@ Game.state = ->
       Game.tank.draw()
       Game.Bullet.all.draw()
       @terrain.draw()
-      #Game.world.DrawDebugData()
+      Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)
