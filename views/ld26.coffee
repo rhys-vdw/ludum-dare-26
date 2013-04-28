@@ -1,6 +1,7 @@
-jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png']
+jaws.assets.add [ 'sprites/tank.png', 'sprites/wheel-8.png', 'sprites/wheel-12.png', 'sprites/jumper.png']
 
 Game.SCALE = 20
+Game.EXTEND_LENGTH = 80
 
 $ ->
   Game.width = $(document).width()
@@ -87,6 +88,9 @@ Game.state = ->
 
     Game.tank = new Game.Tank 10, 30
 
+    for i in [10..300]
+      new Game.Jumper x: i * 5, y: 20
+
     #setup debug draw
     debugDraw = new b2DebugDraw()
     debugDraw.SetSprite jaws.context
@@ -112,8 +116,12 @@ Game.state = ->
     Game.entities.updateIf (e) -> e.update?
 
     @hud.update()
-    @terrain.update()
+
+    if @camera.viewport.x + @camera.viewport.width + Game.EXTEND_LENGTH > @terrain.x * Game.SCALE
+      @extend()
+
     @camera.update()
+
 
   draw: ->
     jaws.clear()
@@ -122,7 +130,7 @@ Game.state = ->
     @camera.apply =>
       Game.entities.draw()
       @terrain.draw()
-      Game.world.DrawDebugData()
+      # Game.world.DrawDebugData()
 
     # Drawn relative to context
     @hud.draw(@camera)

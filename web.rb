@@ -15,6 +15,10 @@ get '/ld26.js' do
 	coffee :ld26
 end
 
+get '/jumper.js' do
+  coffee :jumper
+end
+
 get '/bullet.js' do
   coffee :bullet
 end

@@ -49,7 +49,6 @@ class Game.Tank
 
       motor = Game.world.CreateJoint motorDef
 
-
       @wheels.push wheel
       @motors.push motor
 

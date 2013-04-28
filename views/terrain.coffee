@@ -15,11 +15,6 @@ class Game.Terrain
 
     @extend()
 
-  update: ->
-    if jaws.game_state.camera.viewport.x + jaws.game_state.camera.viewport.width + TERRAIN_PREDRAW_THRESH > @x * Game.SCALE
-      @extend()
-
-
   draw: ->
     xoff = @torndownSegments*@stepWidth
     ctx = jaws.context
