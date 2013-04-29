@@ -135,7 +135,7 @@ Game.state = ->
 
     if @camera.viewport.x + @camera.viewport.width + Game.EXTEND_LENGTH > @terrain.x * Game.SCALE
       length = @terrain.extend()
-      @populate @worldEnd, @worldEnd + length, 3, 10
+      @populate @worldEnd, @worldEnd + length, 70, 100
       @worldEnd += length
 
     @camera.update()
