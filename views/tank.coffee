@@ -139,6 +139,5 @@ class Game.Tank
     @currentBoostPower = Math.min(1, @currentBoostPower)
     @currentBoostPower = Math.max(0, @currentBoostPower)
     speed = baseMotorSpeed + (boostMotorSpeed - baseMotorSpeed) * @currentBoostPower
-    console.log speed
     torque = baseMotorTorque + (boostMotorTorque - baseMotorTorque) * @currentBoostPower
     @setMotorSpeed speed, torque
