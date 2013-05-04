@@ -57,6 +57,9 @@ class Game.Camera
 Game.deltaTime = ->
   jaws.game_loop.tick_duration / 1000
 
+Game.time = ->
+  jaws.game_loop.runtime() / 1000
+
 Game.state = ->
   setup: ->
     gravity = new b2Vec2 0, 18

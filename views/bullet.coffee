@@ -27,7 +27,6 @@ class Game.Bullet
     Game.entities.push @
 
   onContactEnd: (c) ->
-    console.log "BOUNCE!"
     @bouncesLeft--
 
   isDead: ->
@@ -38,7 +37,6 @@ class Game.Bullet
     return @bouncesLeft <= 0 or a.Length() > 500
 
   onDestroy: ->
-    console.log "destroyed bullet"
     Game.world.DestroyBody @body
 
   draw: ->

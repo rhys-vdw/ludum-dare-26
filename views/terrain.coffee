@@ -6,7 +6,8 @@ class Game.Terrain
     @segments = []
     @stepWidth = 3
     @segmentGroupCount = 30
-    @displacement = 20
+    @minDisplacement = 1
+    @maxDisplacement = 22
     # Number of segments ever
     @totalSegments = 0
     # Number of removed segments
@@ -39,8 +40,11 @@ class Game.Terrain
     pointsCount = @points.length
     # Stub the new points as average distance from top
     @points[pointsCount..pointsCount+@segmentGroupCount] = (FROMTOP for num in [1..@segmentGroupCount])
+
+    displacement = @minDisplacement + @totalSegments / 10
+    console.log displacement
     # Augment points with midpoint displacement
-    @midPoint(pointsCount-1, @points.length-1, @displacement, 0.50)
+    @midPoint(pointsCount-1, @points.length-1, Math.min(displacement, @maxDisplacement), 0.50)
     # Create segments
     @createSegments @points[pointsCount-1..], @stepWidth
     # Incremement starting x position for future segments
