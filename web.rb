@@ -19,6 +19,10 @@ get '/jumper.js' do
   coffee :jumper
 end
 
+get '/wheel.js' do
+  coffee :wheel
+end
+
 get '/bullet.js' do
   coffee :bullet
 end
