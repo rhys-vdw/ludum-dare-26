@@ -36,49 +36,18 @@ class Game.Tank
     # Now lets add some wheels.
     wheelSpacing = width / (wheelCount - 1)
     @wheels = []
-    @motors = []
     for i in [0...wheelCount]
       lift = if i == 0 or i == wheelCount-1 then -0.2 else 0
-      wheelPos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance + lift
-      bodyDef.position = wheelPos
-      bodyDef.mass = 10
-      bodyDef.userData = { type: "tank", entity: @ }
-      fixtureDef.shape = new b2CircleShape wheelRadius
-      fixtureDef.restitution = 0
-      fixtureDef.friction = 100
-
-      wheel = Game.world.CreateBody bodyDef
-      wheel.CreateFixture fixtureDef
-
-      bodyDef.position = wheelPos
-      fixtureDef.shape = new b2PolygonShape
-      fixtureDef.shape.SetAsBox wheelRadius/2, wheelRadius/2
-      axle = Game.world.CreateBody bodyDef
-      axle.CreateFixture fixtureDef
-
-      # Wheel to axle
-      motorDef = new b2RevoluteJointDef
-      motorDef.Initialize axle, wheel, wheelPos
-      motorDef.enableMotor = true
-      motorDef.motorSpeed = 20
-      motorDef.maxMotorTorque = 50
-      motor = Game.world.CreateJoint motorDef
-
-      # Axle to body
-      springDef = new b2PrismaticJointDef
-      springDef.lowerTranslation = -0.3
-      springDef.upperTranslation = 0
-      springDef.enableLimit = true
-      springDef.limi = true
-      springDef.enableMotor = true
-      springDef.maxMotorForce = 8
-      springDef.motorSpeed = 4
-      pos = wheelPos.Copy()
-      springDef.Initialize @body, axle, pos, new b2Vec2(0,1)
-      spring = Game.world.CreateJoint springDef
-
-      @wheels.push wheel
-      @motors.push motor
+      pos = new b2Vec2 x - width / 2 + wheelSpacing * i, y + height / 2 + clearance + lift
+      @wheels.push new Game.Wheel
+        position: pos, 
+        wheelRadius: wheelRadius,
+        torque: baseMotorTorque,
+        speed: baseMotorSpeed,
+        image: "sprites/wheel-8.png",
+        parentBody: @body,
+        spriteScale: 3,
+        travel: 0.3
 
   Rad2Deg = 180 / Math.PI
 
@@ -89,10 +58,6 @@ class Game.Tank
     @y = y
     @createTank(x, y)
     @sprite = new jaws.Sprite {image: "sprites/tank.png", x: 0, y: -10, scale: 2.5, anchor: "center"}
-    @wheelSprites = []
-    for wheel in @wheels
-      pos = wheel.GetPosition()
-      wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
 
 
     jaws.on_keydown 'period', @jump
@@ -100,16 +65,6 @@ class Game.Tank
     jaws.on_keyup   'z', @boostEnd
     Game.entities.push @
 
-
-  onContactBegin: (c) ->
-    if c?.type? && c.type == "ground"
-      @groundedWheelCount++
-      @isGrounded = @groundedWheelCount > 0
-
-  onContactEnd: (c) ->
-    if c?.type? && c.type == "ground"
-      @groundedWheelCount--
-      @isGrounded = @groundedWheelCount > 0
 
   boostStart: =>
     console.log "boost start"
@@ -120,9 +75,8 @@ class Game.Tank
     @setMotorSpeed baseMotorSpeed, baseMotorTorque
 
   setMotorSpeed: (speed, torque) ->
-    for motor in @motors
-      motor.SetMotorSpeed speed
-      motor.SetMaxMotorTorque torque
+    for wheel in @wheels
+      wheel.setMotor speed, torque
 
   jump: =>
     if @isGrounded
@@ -131,14 +85,6 @@ class Game.Tank
       @body.SetLinearVelocity v
 
   draw: ->
-    for wheel in @wheels
-      pos = wheel.GetPosition()
-      jaws.context.save()
-      jaws.context.translate pos.x * Game.SCALE, pos.y * Game.SCALE
-      jaws.context.rotate wheel.GetAngle()
-      wheel.sprite.draw()
-      jaws.context.restore()
-
     # Move to tank center
     jaws.context.save()
     jaws.context.translate @x * Game.SCALE, @y * Game.SCALE
@@ -169,7 +115,19 @@ class Game.Tank
     jaws.context.restore()
     jaws.context.restore()
 
+  onContactBegin: (c) ->
+    if c?.type? && c.type == "ground"
+      @sprite.scale = 1
+      @isChassyGrounded = true
+
+  onContactEnd: (c) ->
+    if c?.type? && c.type == "ground"
+      @sprite.scale = 3
+      @isChassyGrounded = false
 
   update: ->
     @x = @body.GetPosition().x
     @y = @body.GetPosition().y
+    @isGrounded = @isChassyGrounded || _.some @wheels, (wheel) ->
+      wheel.isGrounded
+    console.log @isGrounded

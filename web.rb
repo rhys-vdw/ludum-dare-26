@@ -6,7 +6,6 @@ get '/stylesheets/style.css' do
   sass :style
 end
 
-
 get '/' do
 	haml :index
 end
@@ -21,6 +20,10 @@ end
 
 get '/gun.js' do
   coffee :gun
+end
+
+get '/wheel.js' do
+  coffee :wheel
 end
 
 get '/bullet.js' do
