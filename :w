@@ -101,6 +101,10 @@ class Game.Tank
     Game.entities.push @
 
 
+  forwardVector: ->
+    rads = @body.GetAngle()
+    return new b2Vec2 Math.cos(rads), Math.sin(rads)
+
   onContactBegin: (c) ->
     if c?.type? && c.type == "ground"
       @groundedWheelCount++
@@ -130,7 +134,9 @@ class Game.Tank
       v.Add new b2Vec2 0, -100
       @body.SetLinearVelocity v
 
-  fire: => @gun.fire()
+  fire: =>
+    force = @forwardVector()
+    @gun.fire pos: pos, force: force
 
   draw: ->
     for wheel in @wheels

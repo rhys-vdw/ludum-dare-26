@@ -19,6 +19,10 @@ get '/jumper.js' do
   coffee :jumper
 end
 
+get '/gun.js' do
+  coffee :gun
+end
+
 get '/bullet.js' do
   coffee :bullet
 end
