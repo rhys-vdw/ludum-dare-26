@@ -4,6 +4,10 @@ class Game.Tank
   clearance = 1
   wheelCount = 5
   wheelRadius = 0.4
+  baseMotorSpeed = 20
+  baseMotorTorque = 50
+  boostMotorSpeed = 60
+  boostMotorTorque = 100
 
   createTank: (x, y) ->
     # Tank body.
@@ -89,6 +93,8 @@ class Game.Tank
 
     jaws.on_keydown 'space', @fire
     jaws.on_keydown 'period', @jump
+    jaws.on_keydown 'z', @boostStart
+    jaws.on_keyup   'z', @boostEnd
     Game.entities.push @
 
   gunPosition: ->
@@ -113,6 +119,20 @@ class Game.Tank
     if c?.type? && c.type == "ground"
       @groundedWheelCount--
       @isGrounded = @groundedWheelCount > 0
+
+  boostStart: =>
+    console.log "boost start"
+    @setMotorSpeed boostMotorSpeed, boostMotorTorque
+
+  boostEnd: =>
+    console.log "boost end"
+    @setMotorSpeed baseMotorSpeed, baseMotorTorque
+
+  setMotorSpeed: (speed, torque) ->
+    for motor in @motors
+      motor.SetMotorSpeed speed
+      motor.SetMaxMotorTorque torque
+
 
   jump: =>
     if @isGrounded
