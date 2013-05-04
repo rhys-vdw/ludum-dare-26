@@ -126,7 +126,7 @@ Game.state = ->
     Game.world.ClearForces()
 
     Game.entities.deleteIf (e) ->
-      isDead = e.isDead? && e.isDead() == true
+      isDead = e.isDead?()
       if isDead && e.onDestroy?
         e.onDestroy()
       return isDead

@@ -16,8 +16,9 @@ class Game.Gun
     force.Multiply 300000
     pos = new b2Vec2 @attachment.GetPosition().x, @attachment.GetPosition().y
     pos.Add @position()
-    new Game.Bullet pos, force
+    new Game.Bullet(position: pos, force: force, gun: @)
     @nextFireDelay = @fireDelay
+    #console.log Game.entities.length
 
   position: ->
     theta = @attachment.GetAngle()

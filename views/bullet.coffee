@@ -2,12 +2,13 @@ class Game.Bullet
   radius = 0.3
   color = '#FFFFFF'
 
-  constructor: (position, force)->
+  constructor: (options)->
     @bouncesLeft = 2
+    @gun = options.gun
 
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
-    bodyDef.position = position
+    bodyDef.position = options.position
     bodyDef.mass = 1
     bodyDef.userData = { type: "bullet", entity: @ }
 
@@ -21,7 +22,7 @@ class Game.Bullet
     @body.CreateFixture fixtureDef
 
     @body.SetBullet true
-    @body.SetLinearVelocity force
+    @body.SetLinearVelocity options.force
 
     Game.entities.push @
 
@@ -30,7 +31,11 @@ class Game.Bullet
     @bouncesLeft--
 
   isDead: ->
-    @bouncesLeft == 0
+    # Distance from tank
+    a = @body.GetPosition().Copy()
+    a.Subtract Game.tank.body.GetPosition()
+    # Die if no more bounces or too far from tank
+    return @bouncesLeft <= 0 or a.Length() > 500
 
   onDestroy: ->
     console.log "destroyed bullet"
