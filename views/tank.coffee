@@ -10,7 +10,6 @@ class Game.Tank
   boostMotorTorque = 100
 
   createTank: (x, y) ->
-
     # Tank body.
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
@@ -18,6 +17,8 @@ class Game.Tank
     bodyDef.position.y = y
     bodyDef.mass = 200
     bodyDef.userData = { type: "tank", entity: @ }
+    @acceleration = 0
+    @currentBoostPower = 0
 
     # Create box for a shell.
     fixtureDef = new b2FixtureDef
@@ -67,12 +68,12 @@ class Game.Tank
 
 
   boostStart: =>
-    console.log "boost start"
-    @setMotorSpeed boostMotorSpeed, boostMotorTorque
+    console.log 'boost start'
+    @acceleration = 1
 
   boostEnd: =>
-    console.log "boost end"
-    @setMotorSpeed baseMotorSpeed, baseMotorTorque
+    console.log 'boost end'
+    @acceleration = -1
 
   setMotorSpeed: (speed, torque) ->
     for wheel in @wheels
@@ -126,8 +127,18 @@ class Game.Tank
       @isChassyGrounded = false
 
   update: ->
+    # Update positioon
     @x = @body.GetPosition().x
     @y = @body.GetPosition().y
+    # Update groundedness
     @isGrounded = @isChassyGrounded || _.some @wheels, (wheel) ->
       wheel.isGrounded
-    console.log @isGrounded
+
+    # Update motor speed
+    @currentBoostPower += @acceleration/10
+    @currentBoostPower = Math.min(1, @currentBoostPower)
+    @currentBoostPower = Math.max(0, @currentBoostPower)
+    speed = baseMotorSpeed + (boostMotorSpeed - baseMotorSpeed) * @currentBoostPower
+    console.log speed
+    torque = baseMotorTorque + (boostMotorTorque - baseMotorTorque) * @currentBoostPower
+    @setMotorSpeed speed, torque
