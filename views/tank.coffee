@@ -31,7 +31,7 @@ class Game.Tank
     @body.CreateFixture fixtureDef
     
     # Gun
-    @gun = new Game.Gun { force: 30000, attachment: @body }
+    @gun = new Game.Gun { force: 30000, attachment: @body, fireDelay: 0.01 }
 
     # Now lets add some wheels.
     wheelSpacing = width / (wheelCount - 1)
@@ -94,7 +94,7 @@ class Game.Tank
       pos = wheel.GetPosition()
       wheel.sprite = new jaws.Sprite( { image: "sprites/wheel-8.png", x: 0, y: 0, anchor:"center", scale: 3 } )
 
-    jaws.on_keydown 'space', @fire
+
     jaws.on_keydown 'period', @jump
     jaws.on_keydown 'z', @boostStart
     jaws.on_keyup   'z', @boostEnd
@@ -129,8 +129,6 @@ class Game.Tank
       v = @body.GetLinearVelocity()
       v.Add new b2Vec2 0, -100
       @body.SetLinearVelocity v
-
-  fire: => @gun.fire()
 
   draw: ->
     for wheel in @wheels
