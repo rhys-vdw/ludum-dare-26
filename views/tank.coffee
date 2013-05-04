@@ -31,7 +31,7 @@ class Game.Tank
     @body.CreateFixture fixtureDef
     
     # Gun
-    @gun = new Game.Gun { force: 30000, attachment: @body, fireDelay: 0.1 }
+    @gun = new Game.Gun { force: 50, attachment: @body, fireDelay: 0.1 }
 
     # Now lets add some wheels.
     wheelSpacing = width / (wheelCount - 1)

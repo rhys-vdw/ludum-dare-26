@@ -13,7 +13,7 @@ class Game.Gun
   fire: ->
     return unless @nextFireDelay <= 0
     force = @forwardVector()
-    force.Multiply 300000
+    force.Multiply @force
     pos = new b2Vec2 @attachment.GetPosition().x, @attachment.GetPosition().y
     pos.Add @position()
     new Game.Bullet(position: pos, force: force, gun: @)

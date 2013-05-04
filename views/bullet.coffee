@@ -3,7 +3,7 @@ class Game.Bullet
   color = '#FFFFFF'
 
   constructor: (options)->
-    @bouncesLeft = 2
+    @bouncesLeft = 5
     @gun = options.gun
 
     bodyDef = new b2BodyDef
