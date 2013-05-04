@@ -137,7 +137,19 @@ class Game.Tank
 
     jaws.context.restore()
 
+  onContactBegin: (c) ->
+    if c?.type? && c.type == "ground"
+      @sprite.scale = 1
+      @isChassyGrounded = true
+
+  onContactEnd: (c) ->
+    if c?.type? && c.type == "ground"
+      @sprite.scale = 3
+      @isChassyGrounded = false
 
   update: ->
     @x = @body.GetPosition().x
     @y = @body.GetPosition().y
+    @isGrounded = @isChassyGrounded || _.some @wheels, (wheel) ->
+      wheel.isGrounded
+    console.log @isGrounded

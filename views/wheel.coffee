@@ -1,11 +1,11 @@
 class Game.Wheel
   # Private static functions.
-  createWheelBody = (options) ->
+  createWheelBody = (options, tank) ->
     bodyDef = new b2BodyDef
     bodyDef.type = b2Body.b2_dynamicBody
     bodyDef.position = options.position
     bodyDef.mass = 10
-    bodyDef.userData = type: "wheel", entity: @
+    bodyDef.userData = type: "wheel", entity: tank
 
     fixtureDef = new b2FixtureDef
     fixtureDef.density = 1.0
@@ -76,7 +76,7 @@ class Game.Wheel
     @torqe = options.torque
     @speed = options.speed
 
-    @wheelBody = createWheelBody options
+    @wheelBody = createWheelBody options, @
 
     # If a parent body is supplied, create axle, suspension and rotating joint.
     if options.parentBody != null
